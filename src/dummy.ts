@@ -352,7 +352,7 @@ export const SYSTEM_CONFIG: SystemConfig = {
   hallName: "Kabi Kazi Nazrul Islam Hall of Residence",
   totalRooms: 240,
   wardenName: "Dr. Anita Krishnan",
-  contactEmail: "kaveri.hall@university.edu",
+  contactEmail: "kknih@cuet.ac.bd",
   notificationsEnabled: true,
   autoAssign: false,
   maxComplaintsPerDay: 5,
