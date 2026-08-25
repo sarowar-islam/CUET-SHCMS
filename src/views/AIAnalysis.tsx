@@ -23,14 +23,26 @@ import { CATEGORY_LABELS, STATUS_LABELS } from "../dummy";
 
 /* Validated categorical palette — all 6 pass CVD + contrast checks.
    #F59E0B and #10B981 have contrast WARN → every bar/segment carries a direct label. */
-const CAT_PALETTE = ["#0D9488", "#3B82F6", "#F59E0B", "#EF4444", "#8B5CF6", "#10B981"];
+const CAT_PALETTE = [
+  "#0D9488",
+  "#3B82F6",
+  "#F59E0B",
+  "#EF4444",
+  "#8B5CF6",
+  "#10B981",
+];
 
 function derive(complaints: Complaint[]) {
   // Category counts
   const catCount: Record<string, number> = {};
-  for (const c of complaints) catCount[c.category] = (catCount[c.category] ?? 0) + 1;
+  for (const c of complaints)
+    catCount[c.category] = (catCount[c.category] ?? 0) + 1;
   const byCategory = Object.entries(catCount)
-    .map(([k, v]) => ({ key: k, label: CATEGORY_LABELS[k as keyof typeof CATEGORY_LABELS], count: v }))
+    .map(([k, v]) => ({
+      key: k,
+      label: CATEGORY_LABELS[k as keyof typeof CATEGORY_LABELS],
+      count: v,
+    }))
     .sort((a, b) => b.count - a.count);
 
   // Block extraction (first char of room, e.g. "A-204" → "A")
@@ -45,7 +57,8 @@ function derive(complaints: Complaint[]) {
 
   // Status distribution
   const statusCount: Record<string, number> = {};
-  for (const c of complaints) statusCount[c.status] = (statusCount[c.status] ?? 0) + 1;
+  for (const c of complaints)
+    statusCount[c.status] = (statusCount[c.status] ?? 0) + 1;
   const byStatus = Object.entries(statusCount).map(([k, v]) => ({
     label: STATUS_LABELS[k as keyof typeof STATUS_LABELS],
     value: v,
@@ -54,7 +67,8 @@ function derive(complaints: Complaint[]) {
   // Urgency distribution
   const urgencyOrder = ["critical", "high", "medium", "low"];
   const urgencyCount: Record<string, number> = {};
-  for (const c of complaints) urgencyCount[c.urgency] = (urgencyCount[c.urgency] ?? 0) + 1;
+  for (const c of complaints)
+    urgencyCount[c.urgency] = (urgencyCount[c.urgency] ?? 0) + 1;
   const byUrgency = urgencyOrder.map((u) => ({
     urgency: u.charAt(0).toUpperCase() + u.slice(1),
     count: urgencyCount[u] ?? 0,
@@ -86,16 +100,21 @@ function derive(complaints: Complaint[]) {
 
   // Resolution rate
   const resolved = complaints.filter((c) => c.status === "resolved").length;
-  const resolutionRate = complaints.length ? Math.round((resolved / complaints.length) * 100) : 0;
+  const resolutionRate = complaints.length
+    ? Math.round((resolved / complaints.length) * 100)
+    : 0;
 
   // Avg time to resolve (mock — real timestamps differ by days)
   const resolvedComplaints = complaints.filter((c) => c.status === "resolved");
   const avgDays = resolvedComplaints.length
     ? Math.round(
         resolvedComplaints.reduce((acc, c) => {
-          const diff = (new Date(c.updatedAt).getTime() - new Date(c.submittedAt).getTime()) / 86400000;
+          const diff =
+            (new Date(c.updatedAt).getTime() -
+              new Date(c.submittedAt).getTime()) /
+            86400000;
           return acc + Math.abs(diff);
-        }, 0) / resolvedComplaints.length
+        }, 0) / resolvedComplaints.length,
       )
     : 0;
 
@@ -105,7 +124,7 @@ function derive(complaints: Complaint[]) {
 
   // Pending urgency alert
   const criticalPending = complaints.filter(
-    (c) => c.urgency === "critical" && c.status === "pending"
+    (c) => c.urgency === "critical" && c.status === "pending",
   ).length;
 
   return {
@@ -128,35 +147,35 @@ function generateInsights(stats: ReturnType<typeof derive>): string[] {
   const insights: string[] = [];
   if (stats.topCategory) {
     insights.push(
-      `${stats.topCategory.label} complaints account for the highest volume (${stats.topCategory.count} cases), suggesting infrastructure wear or seasonal load increases in this domain.`
+      `${stats.topCategory.label} complaints account for the highest volume (${stats.topCategory.count} cases), suggesting infrastructure wear or seasonal load increases in this domain.`,
     );
   }
   if (stats.topBlock) {
     insights.push(
-      `${stats.topBlock.block} is the most complaint-prone zone with ${stats.topBlock.count} reported issues. A targeted inspection of this block is recommended.`
+      `${stats.topBlock.block} is the most complaint-prone zone with ${stats.topBlock.count} reported issues. A targeted inspection of this block is recommended.`,
     );
   }
   if (stats.resolutionRate < 50) {
     insights.push(
-      `Resolution rate is ${stats.resolutionRate}% — below the 60% benchmark. Increasing staff bandwidth or enabling auto-assignment may improve throughput.`
+      `Resolution rate is ${stats.resolutionRate}% — below the 60% benchmark. Increasing staff bandwidth or enabling auto-assignment may improve throughput.`,
     );
   } else {
     insights.push(
-      `Resolution rate stands at ${stats.resolutionRate}%, above the 60% institutional benchmark. Maintain current response protocols.`
+      `Resolution rate stands at ${stats.resolutionRate}%, above the 60% institutional benchmark. Maintain current response protocols.`,
     );
   }
   if (stats.criticalPending > 0) {
     insights.push(
-      `${stats.criticalPending} critical complaint${stats.criticalPending > 1 ? "s are" : " is"} still pending — these carry safety risk and require immediate staff assignment.`
+      `${stats.criticalPending} critical complaint${stats.criticalPending > 1 ? "s are" : " is"} still pending — these carry safety risk and require immediate staff assignment.`,
     );
   }
   if (stats.avgDays <= 2) {
     insights.push(
-      `Average resolution time is ${stats.avgDays} day${stats.avgDays !== 1 ? "s" : ""} — an excellent response pace for a residential facility.`
+      `Average resolution time is ${stats.avgDays} day${stats.avgDays !== 1 ? "s" : ""} — an excellent response pace for a residential facility.`,
     );
   } else {
     insights.push(
-      `Average resolution time is ${stats.avgDays} days. Streamlining handoff from Admin to Staff could reduce this by an estimated 30–40%.`
+      `Average resolution time is ${stats.avgDays} days. Streamlining handoff from Admin to Staff could reduce this by an estimated 30–40%.`,
     );
   }
   return insights;
@@ -221,7 +240,9 @@ function ChartTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
     <div style={tooltipStyle}>
-      {label && <p style={{ color: "#6B7280", marginBottom: "4px" }}>{label}</p>}
+      {label && (
+        <p style={{ color: "#6B7280", marginBottom: "4px" }}>{label}</p>
+      )}
       {payload.map((p: any) => (
         <p key={p.dataKey} style={{ color: p.color ?? "#111827" }}>
           <span style={{ color: "#6B7280" }}>{p.name ?? p.dataKey}: </span>
@@ -252,7 +273,10 @@ export default function AIAnalysis({ complaints }: Props) {
     setStreamedInsights([]);
     const interval = setInterval(() => {
       setProgress((p) => {
-        if (p >= 100) { clearInterval(interval); return 100; }
+        if (p >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
         return p + 4;
       });
     }, 60);
@@ -285,9 +309,18 @@ export default function AIAnalysis({ complaints }: Props) {
       <div className="flex flex-col items-center justify-center py-24 gap-6">
         <div className="relative w-20 h-20">
           <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
-            <circle cx="40" cy="40" r="34" fill="none" stroke="#EEF0F4" strokeWidth="6" />
             <circle
-              cx="40" cy="40" r="34"
+              cx="40"
+              cy="40"
+              r="34"
+              fill="none"
+              stroke="#EEF0F4"
+              strokeWidth="6"
+            />
+            <circle
+              cx="40"
+              cy="40"
+              r="34"
               fill="none"
               stroke="#0D9488"
               strokeWidth="6"
@@ -298,19 +331,36 @@ export default function AIAnalysis({ complaints }: Props) {
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span style={{ fontFamily: "var(--font-mono)", fontSize: "14px", color: "#0D9488", fontWeight: 500 }}>
+            <span
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "14px",
+                color: "#0D9488",
+                fontWeight: 500,
+              }}
+            >
               {progress}%
             </span>
           </div>
         </div>
         <div className="text-center space-y-1.5">
-          <p className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#111827" }}>
+          <p
+            className="text-sm font-semibold"
+            style={{ fontFamily: "var(--font-display)", color: "#111827" }}
+          >
             AI Analysing Complaints…
           </p>
-          <p className="text-xs" style={{ color: "#9CA3AF", fontFamily: "var(--font-mono)" }}>
+          <p
+            className="text-xs"
+            style={{ color: "#9CA3AF", fontFamily: "var(--font-mono)" }}
+          >
             {progress < 30 && "Parsing complaint records…"}
-            {progress >= 30 && progress < 55 && "Identifying hotspots and patterns…"}
-            {progress >= 55 && progress < 75 && "Computing category frequency distributions…"}
+            {progress >= 30 &&
+              progress < 55 &&
+              "Identifying hotspots and patterns…"}
+            {progress >= 55 &&
+              progress < 75 &&
+              "Computing category frequency distributions…"}
             {progress >= 75 && progress < 92 && "Running predictive models…"}
             {progress >= 92 && "Generating insights and recommendations…"}
           </p>
@@ -319,7 +369,17 @@ export default function AIAnalysis({ complaints }: Props) {
     );
   }
 
-  const { byCategory, byBlock, byStatus, byUrgency, trend, resolutionRate, avgDays, criticalPending, total } = stats;
+  const {
+    byCategory,
+    byBlock,
+    byStatus,
+    byUrgency,
+    trend,
+    resolutionRate,
+    avgDays,
+    criticalPending,
+    total,
+  } = stats;
 
   return (
     <div className="space-y-8 pb-8">
@@ -327,14 +387,21 @@ export default function AIAnalysis({ complaints }: Props) {
       <div
         className="rounded-xl px-6 py-5 flex items-center gap-4"
         style={{
-          background: "linear-gradient(135deg, #0F1B2D 0%, #1A3A5C 60%, #0D9488 100%)",
+          background:
+            "linear-gradient(135deg, #0F1B2D 0%, #1A3A5C 60%, #0D9488 100%)",
         }}
       >
         <div
           className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
           style={{ backgroundColor: "rgba(255,255,255,0.12)" }}
         >
-          <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            className="w-5 h-5 text-white"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <circle cx="12" cy="12" r="3" />
             <path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12" />
           </svg>
@@ -346,15 +413,30 @@ export default function AIAnalysis({ complaints }: Props) {
           >
             AI-Powered Complaint Analysis
           </h2>
-          <p className="text-xs" style={{ color: "rgba(255,255,255,0.55)", fontFamily: "var(--font-mono)" }}>
-            Analysed {total} complaint records · Kaveri Hall · Updated just now
+          <p
+            className="text-xs"
+            style={{
+              color: "rgba(255,255,255,0.55)",
+              fontFamily: "var(--font-mono)",
+            }}
+          >
+            Analysed {total} complaint records · Kabi Kazi Nazrul Islam Hall ·
+            Updated just now
           </p>
         </div>
         <div className="flex gap-3 shrink-0">
           {[
-            { label: "Resolution", value: `${resolutionRate}%`, good: resolutionRate >= 50 },
+            {
+              label: "Resolution",
+              value: `${resolutionRate}%`,
+              good: resolutionRate >= 50,
+            },
             { label: "Avg. Resolve", value: `${avgDays}d`, good: avgDays <= 3 },
-            { label: "Critical Pending", value: String(criticalPending), good: criticalPending === 0 },
+            {
+              label: "Critical Pending",
+              value: String(criticalPending),
+              good: criticalPending === 0,
+            },
           ].map((kpi) => (
             <div
               key={kpi.label}
@@ -370,7 +452,13 @@ export default function AIAnalysis({ complaints }: Props) {
               >
                 {kpi.value}
               </p>
-              <p className="text-xs" style={{ color: "rgba(255,255,255,0.5)", fontFamily: "var(--font-mono)" }}>
+              <p
+                className="text-xs"
+                style={{
+                  color: "rgba(255,255,255,0.5)",
+                  fontFamily: "var(--font-mono)",
+                }}
+              >
                 {kpi.label}
               </p>
             </div>
@@ -388,11 +476,20 @@ export default function AIAnalysis({ complaints }: Props) {
             className="w-5 h-5 rounded flex items-center justify-center"
             style={{ backgroundColor: "#F0FDF4" }}
           >
-            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="#0D9488" strokeWidth="2.5">
+            <svg
+              className="w-3 h-3"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#0D9488"
+              strokeWidth="2.5"
+            >
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
-          <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#111827" }}>
+          <h3
+            className="text-sm font-semibold"
+            style={{ fontFamily: "var(--font-display)", color: "#111827" }}
+          >
             AI Key Findings
           </h3>
         </div>
@@ -409,7 +506,11 @@ export default function AIAnalysis({ complaints }: Props) {
             >
               <span
                 className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-semibold mt-0.5"
-                style={{ backgroundColor: "#EEF0F4", color: "#6B7280", fontFamily: "var(--font-mono)" }}
+                style={{
+                  backgroundColor: "#EEF0F4",
+                  color: "#6B7280",
+                  fontFamily: "var(--font-mono)",
+                }}
               >
                 {i + 1}
               </span>
@@ -424,7 +525,9 @@ export default function AIAnalysis({ complaints }: Props) {
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-pulse" />
               </span>
-              <span className="text-xs" style={{ color: "#9CA3AF" }}>Generating next insight…</span>
+              <span className="text-xs" style={{ color: "#9CA3AF" }}>
+                Generating next insight…
+              </span>
             </li>
           )}
         </ul>
@@ -433,7 +536,10 @@ export default function AIAnalysis({ complaints }: Props) {
       {/* Row 1: Category bar + Block bar */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Category frequency */}
-        <div className="rounded-xl p-6" style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}>
+        <div
+          className="rounded-xl p-6"
+          style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}
+        >
           <ChartHeader
             title="Complaints by Category"
             subtitle="Ranked by volume — direct labels shown"
@@ -445,10 +551,18 @@ export default function AIAnalysis({ complaints }: Props) {
               margin={{ left: 12, right: 32, top: 4, bottom: 4 }}
               barSize={14}
             >
-              <CartesianGrid horizontal={false} stroke="#EEF0F4" strokeDasharray="3 3" />
+              <CartesianGrid
+                horizontal={false}
+                stroke="#EEF0F4"
+                strokeDasharray="3 3"
+              />
               <XAxis
                 type="number"
-                tick={{ fontSize: 11, fontFamily: "var(--font-mono)", fill: "#9CA3AF" }}
+                tick={{
+                  fontSize: 11,
+                  fontFamily: "var(--font-mono)",
+                  fill: "#9CA3AF",
+                }}
                 axisLine={false}
                 tickLine={false}
               />
@@ -456,12 +570,29 @@ export default function AIAnalysis({ complaints }: Props) {
                 dataKey="label"
                 type="category"
                 width={110}
-                tick={{ fontSize: 11, fontFamily: "var(--font-body)", fill: "#374151" }}
+                tick={{
+                  fontSize: 11,
+                  fontFamily: "var(--font-body)",
+                  fill: "#374151",
+                }}
                 axisLine={false}
                 tickLine={false}
               />
-              <Tooltip content={<ChartTooltip />} cursor={{ fill: "#F4F5F7" }} />
-              <Bar dataKey="count" name="Complaints" radius={[0, 4, 4, 0]} label={{ position: "right", fontSize: 11, fontFamily: "var(--font-mono)", fill: "#6B7280" }}>
+              <Tooltip
+                content={<ChartTooltip />}
+                cursor={{ fill: "#F4F5F7" }}
+              />
+              <Bar
+                dataKey="count"
+                name="Complaints"
+                radius={[0, 4, 4, 0]}
+                label={{
+                  position: "right",
+                  fontSize: 11,
+                  fontFamily: "var(--font-mono)",
+                  fill: "#6B7280",
+                }}
+              >
                 {byCategory.map((_, i) => (
                   <Cell key={i} fill={CAT_PALETTE[i % CAT_PALETTE.length]} />
                 ))}
@@ -471,7 +602,10 @@ export default function AIAnalysis({ complaints }: Props) {
         </div>
 
         {/* Block distribution */}
-        <div className="rounded-xl p-6" style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}>
+        <div
+          className="rounded-xl p-6"
+          style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}
+        >
           <ChartHeader
             title="Complaints by Block"
             subtitle="Which residential wings report the most issues"
@@ -482,20 +616,45 @@ export default function AIAnalysis({ complaints }: Props) {
               margin={{ left: 8, right: 16, top: 4, bottom: 4 }}
               barSize={36}
             >
-              <CartesianGrid vertical={false} stroke="#EEF0F4" strokeDasharray="3 3" />
+              <CartesianGrid
+                vertical={false}
+                stroke="#EEF0F4"
+                strokeDasharray="3 3"
+              />
               <XAxis
                 dataKey="block"
-                tick={{ fontSize: 11, fontFamily: "var(--font-body)", fill: "#374151" }}
+                tick={{
+                  fontSize: 11,
+                  fontFamily: "var(--font-body)",
+                  fill: "#374151",
+                }}
                 axisLine={false}
                 tickLine={false}
               />
               <YAxis
-                tick={{ fontSize: 11, fontFamily: "var(--font-mono)", fill: "#9CA3AF" }}
+                tick={{
+                  fontSize: 11,
+                  fontFamily: "var(--font-mono)",
+                  fill: "#9CA3AF",
+                }}
                 axisLine={false}
                 tickLine={false}
               />
-              <Tooltip content={<ChartTooltip />} cursor={{ fill: "#F4F5F7" }} />
-              <Bar dataKey="count" name="Complaints" radius={[4, 4, 0, 0]} label={{ position: "top", fontSize: 11, fontFamily: "var(--font-mono)", fill: "#6B7280" }}>
+              <Tooltip
+                content={<ChartTooltip />}
+                cursor={{ fill: "#F4F5F7" }}
+              />
+              <Bar
+                dataKey="count"
+                name="Complaints"
+                radius={[4, 4, 0, 0]}
+                label={{
+                  position: "top",
+                  fontSize: 11,
+                  fontFamily: "var(--font-mono)",
+                  fill: "#6B7280",
+                }}
+              >
                 {byBlock.map((_, i) => (
                   <Cell key={i} fill={CAT_PALETTE[i % CAT_PALETTE.length]} />
                 ))}
@@ -517,16 +676,27 @@ export default function AIAnalysis({ complaints }: Props) {
             subtitle="Top 4 categories over 6 months (simulated from current data)"
           />
           <ResponsiveContainer width="100%" height={200}>
-            <LineChart data={trend} margin={{ left: 0, right: 16, top: 8, bottom: 4 }}>
+            <LineChart
+              data={trend}
+              margin={{ left: 0, right: 16, top: 8, bottom: 4 }}
+            >
               <CartesianGrid stroke="#EEF0F4" strokeDasharray="3 3" />
               <XAxis
                 dataKey="month"
-                tick={{ fontSize: 11, fontFamily: "var(--font-body)", fill: "#374151" }}
+                tick={{
+                  fontSize: 11,
+                  fontFamily: "var(--font-body)",
+                  fill: "#374151",
+                }}
                 axisLine={false}
                 tickLine={false}
               />
               <YAxis
-                tick={{ fontSize: 11, fontFamily: "var(--font-mono)", fill: "#9CA3AF" }}
+                tick={{
+                  fontSize: 11,
+                  fontFamily: "var(--font-mono)",
+                  fill: "#9CA3AF",
+                }}
                 axisLine={false}
                 tickLine={false}
                 allowDecimals={false}
@@ -535,10 +705,18 @@ export default function AIAnalysis({ complaints }: Props) {
               <Legend
                 iconType="circle"
                 iconSize={8}
-                wrapperStyle={{ fontSize: "11px", fontFamily: "var(--font-body)", paddingTop: "8px" }}
+                wrapperStyle={{
+                  fontSize: "11px",
+                  fontFamily: "var(--font-body)",
+                  paddingTop: "8px",
+                }}
               />
               {[
-                { key: "electrical", color: CAT_PALETTE[0], label: "Electrical" },
+                {
+                  key: "electrical",
+                  color: CAT_PALETTE[0],
+                  label: "Electrical",
+                },
                 { key: "plumbing", color: CAT_PALETTE[1], label: "Plumbing" },
                 { key: "internet", color: CAT_PALETTE[2], label: "Internet" },
                 { key: "others", color: CAT_PALETTE[3], label: "Others" },
@@ -559,8 +737,14 @@ export default function AIAnalysis({ complaints }: Props) {
         </div>
 
         {/* Urgency breakdown */}
-        <div className="rounded-xl p-6" style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}>
-          <ChartHeader title="Urgency Distribution" subtitle="Current complaint pool" />
+        <div
+          className="rounded-xl p-6"
+          style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}
+        >
+          <ChartHeader
+            title="Urgency Distribution"
+            subtitle="Current complaint pool"
+          />
           <div className="space-y-3 mt-4">
             {byUrgency.map((u, i) => {
               const colors = ["#EF4444", "#F59E0B", "#0D9488", "#6B7280"];
@@ -568,14 +752,28 @@ export default function AIAnalysis({ complaints }: Props) {
               return (
                 <div key={u.urgency}>
                   <div className="flex justify-between text-xs mb-1">
-                    <span style={{ color: "#374151", fontFamily: "var(--font-body)", fontWeight: 500 }}>
+                    <span
+                      style={{
+                        color: "#374151",
+                        fontFamily: "var(--font-body)",
+                        fontWeight: 500,
+                      }}
+                    >
                       {u.urgency}
                     </span>
-                    <span style={{ color: "#9CA3AF", fontFamily: "var(--font-mono)" }}>
+                    <span
+                      style={{
+                        color: "#9CA3AF",
+                        fontFamily: "var(--font-mono)",
+                      }}
+                    >
                       {u.count} ({pct}%)
                     </span>
                   </div>
-                  <div className="w-full rounded-full h-2" style={{ backgroundColor: "#EEF0F4" }}>
+                  <div
+                    className="w-full rounded-full h-2"
+                    style={{ backgroundColor: "#EEF0F4" }}
+                  >
                     <div
                       className="h-2 rounded-full"
                       style={{ width: `${pct}%`, backgroundColor: colors[i] }}
@@ -587,8 +785,14 @@ export default function AIAnalysis({ complaints }: Props) {
           </div>
 
           {/* Status donut surrogate — simple stat tiles */}
-          <div className="mt-6 pt-5 border-t" style={{ borderColor: "var(--border)" }}>
-            <p className="text-xs font-semibold mb-3" style={{ fontFamily: "var(--font-display)", color: "#6B7280" }}>
+          <div
+            className="mt-6 pt-5 border-t"
+            style={{ borderColor: "var(--border)" }}
+          >
+            <p
+              className="text-xs font-semibold mb-3"
+              style={{ fontFamily: "var(--font-display)", color: "#6B7280" }}
+            >
               STATUS SPLIT
             </p>
             <div className="grid grid-cols-2 gap-2">
@@ -600,11 +804,17 @@ export default function AIAnalysis({ complaints }: Props) {
                 >
                   <p
                     className="text-lg font-bold"
-                    style={{ color: CAT_PALETTE[i % CAT_PALETTE.length], fontFamily: "var(--font-display)" }}
+                    style={{
+                      color: CAT_PALETTE[i % CAT_PALETTE.length],
+                      fontFamily: "var(--font-display)",
+                    }}
                   >
                     {s.value}
                   </p>
-                  <p className="text-xs" style={{ color: "#9CA3AF", fontFamily: "var(--font-mono)" }}>
+                  <p
+                    className="text-xs"
+                    style={{ color: "#9CA3AF", fontFamily: "var(--font-mono)" }}
+                  >
                     {s.label}
                   </p>
                 </div>
@@ -625,19 +835,35 @@ export default function AIAnalysis({ complaints }: Props) {
         />
         <div className="flex justify-center">
           <ResponsiveContainer width="100%" height={280}>
-            <RadarChart data={stats.radarData} margin={{ top: 8, right: 40, bottom: 8, left: 40 }}>
+            <RadarChart
+              data={stats.radarData}
+              margin={{ top: 8, right: 40, bottom: 8, left: 40 }}
+            >
               <PolarGrid stroke="#EEF0F4" />
               <PolarAngleAxis
                 dataKey="block"
-                tick={{ fontSize: 11, fontFamily: "var(--font-body)", fill: "#374151" }}
+                tick={{
+                  fontSize: 11,
+                  fontFamily: "var(--font-body)",
+                  fill: "#374151",
+                }}
               />
               <Tooltip content={<ChartTooltip />} />
               <Legend
                 iconType="circle"
                 iconSize={8}
-                wrapperStyle={{ fontSize: "11px", fontFamily: "var(--font-body)", paddingTop: "8px" }}
+                wrapperStyle={{
+                  fontSize: "11px",
+                  fontFamily: "var(--font-body)",
+                  paddingTop: "8px",
+                }}
               />
-              {Object.keys(stats.byCategory.reduce((a, c) => ({ ...a, [c.key]: true }), {} as Record<string, boolean>)).map((key, i) => (
+              {Object.keys(
+                stats.byCategory.reduce(
+                  (a, c) => ({ ...a, [c.key]: true }),
+                  {} as Record<string, boolean>,
+                ),
+              ).map((key, i) => (
                 <Radar
                   key={key}
                   name={CATEGORY_LABELS[key as keyof typeof CATEGORY_LABELS]}
@@ -656,7 +882,13 @@ export default function AIAnalysis({ complaints }: Props) {
       {/* Predictions */}
       <div>
         <div className="flex items-center gap-2 mb-4">
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" strokeWidth="2">
+          <svg
+            className="w-4 h-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#8B5CF6"
+            strokeWidth="2"
+          >
             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
             <circle cx="12" cy="12" r="3" />
           </svg>
@@ -681,9 +913,24 @@ export default function AIAnalysis({ complaints }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
           {generatePredictions(stats).map((pred, i) => {
             const typeStyle = {
-              risk: { bg: "#FEF2F2", border: "#FECACA", dot: "#EF4444", label: "Risk" },
-              opportunity: { bg: "#F0FDF4", border: "#6EE7B7", dot: "#10B981", label: "Opportunity" },
-              trend: { bg: "#EFF6FF", border: "#BFDBFE", dot: "#3B82F6", label: "Trend" },
+              risk: {
+                bg: "#FEF2F2",
+                border: "#FECACA",
+                dot: "#EF4444",
+                label: "Risk",
+              },
+              opportunity: {
+                bg: "#F0FDF4",
+                border: "#6EE7B7",
+                dot: "#10B981",
+                label: "Opportunity",
+              },
+              trend: {
+                bg: "#EFF6FF",
+                border: "#BFDBFE",
+                dot: "#3B82F6",
+                label: "Trend",
+              },
             }[pred.type];
             return (
               <div
@@ -714,7 +961,10 @@ export default function AIAnalysis({ complaints }: Props) {
                 </div>
                 <p
                   className="text-sm font-semibold leading-snug"
-                  style={{ fontFamily: "var(--font-display)", color: "#111827" }}
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    color: "#111827",
+                  }}
                 >
                   {pred.title}
                 </p>
@@ -726,10 +976,16 @@ export default function AIAnalysis({ complaints }: Props) {
                 </p>
                 {/* Confidence bar */}
                 <div>
-                  <div className="w-full rounded-full h-1" style={{ backgroundColor: "rgba(0,0,0,0.08)" }}>
+                  <div
+                    className="w-full rounded-full h-1"
+                    style={{ backgroundColor: "rgba(0,0,0,0.08)" }}
+                  >
                     <div
                       className="h-1 rounded-full"
-                      style={{ width: `${pred.confidence}%`, backgroundColor: typeStyle.dot }}
+                      style={{
+                        width: `${pred.confidence}%`,
+                        backgroundColor: typeStyle.dot,
+                      }}
                     />
                   </div>
                 </div>
@@ -758,7 +1014,10 @@ function ChartHeader({ title, subtitle }: { title: string; subtitle: string }) {
       >
         {title}
       </h3>
-      <p className="text-xs mt-0.5" style={{ color: "#9CA3AF", fontFamily: "var(--font-body)" }}>
+      <p
+        className="text-xs mt-0.5"
+        style={{ color: "#9CA3AF", fontFamily: "var(--font-body)" }}
+      >
         {subtitle}
       </p>
     </div>

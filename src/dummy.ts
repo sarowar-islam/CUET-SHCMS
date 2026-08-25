@@ -59,8 +59,8 @@ export const USERS: User[] = [
     username: "2204107",
     password: "student",
     role: "student",
-    name: "Arjun Mehta",
-    email: "arjun.mehta@university.edu",
+    name: "Sarowar Islam",
+    email: "u2204107@student.cuet.ac.bd",
     room: "A-204",
     phone: "+91 98765 43210",
     joinedDate: "2022-08-01",
@@ -168,7 +168,7 @@ export const COMPLAINTS: Complaint[] = [
   {
     id: "CMP-001",
     studentId: "2204107",
-    studentName: "Arjun Mehta",
+    studentName: "Sarowar Islam",
     room: "A-204",
     title: "Fan switch not working",
     description:
@@ -199,7 +199,7 @@ export const COMPLAINTS: Complaint[] = [
   {
     id: "CMP-002",
     studentId: "2204107",
-    studentName: "Arjun Mehta",
+    studentName: "Sarowar Islam",
     room: "A-204",
     title: "Water leakage from washroom tap",
     description:
@@ -310,7 +310,7 @@ export const COMPLAINTS: Complaint[] = [
   {
     id: "CMP-007",
     studentId: "2204107",
-    studentName: "Arjun Mehta",
+    studentName: "Sarowar Islam",
     room: "A-204",
     title: "Power socket not working",
     description:
@@ -349,7 +349,7 @@ export const COMPLAINTS: Complaint[] = [
 ];
 
 export const SYSTEM_CONFIG: SystemConfig = {
-  hallName: "Kaveri Hall of Residence",
+  hallName: "Kabi Kazi Nazrul Islam Hall of Residence",
   totalRooms: 240,
   wardenName: "Dr. Anita Krishnan",
   contactEmail: "kaveri.hall@university.edu",

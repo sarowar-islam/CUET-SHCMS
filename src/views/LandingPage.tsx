@@ -10,9 +10,15 @@ function useInView(threshold = 0.15) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { setVisible(true); obs.disconnect(); }
-    }, { threshold });
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          obs.disconnect();
+        }
+      },
+      { threshold },
+    );
     obs.observe(el);
     return () => obs.disconnect();
   }, [threshold]);
@@ -29,7 +35,13 @@ const STATS = [
 const FEATURES = [
   {
     icon: (
-      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        className="w-5 h-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
       </svg>
@@ -39,16 +51,28 @@ const FEATURES = [
   },
   {
     icon: (
-      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        className="w-5 h-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
       </svg>
     ),
     title: "AI Chatbot Assistant",
-    desc: "Describe your problem conversationally — \"My fan switch isn't working\" — and the AI assistant auto-fills the entire complaint form for you.",
+    desc: 'Describe your problem conversationally — "My fan switch isn\'t working" — and the AI assistant auto-fills the entire complaint form for you.',
   },
   {
     icon: (
-      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        className="w-5 h-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
       </svg>
     ),
@@ -57,7 +81,13 @@ const FEATURES = [
   },
   {
     icon: (
-      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        className="w-5 h-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <circle cx="12" cy="12" r="3" />
         <path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12" />
       </svg>
@@ -67,7 +97,13 @@ const FEATURES = [
   },
   {
     icon: (
-      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        className="w-5 h-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
         <circle cx="9" cy="7" r="4" />
         <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
@@ -78,7 +114,13 @@ const FEATURES = [
   },
   {
     icon: (
-      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        className="w-5 h-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
         <path d="M7 11V7a5 5 0 0 1 10 0v4" />
       </svg>
@@ -101,7 +143,13 @@ const ROLES = [
       "Filter complaint history by date, category, or status",
     ],
     icon: (
-      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        className="w-6 h-6"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
         <path d="M6 12v5c3 3 9 3 12 0v-5" />
       </svg>
@@ -119,7 +167,13 @@ const ROLES = [
       "Communicate resolution directly through the portal",
     ],
     icon: (
-      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        className="w-6 h-6"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
       </svg>
     ),
@@ -136,7 +190,13 @@ const ROLES = [
       "Configure hall settings and view AI analytics",
     ],
     icon: (
-      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        className="w-6 h-6"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <circle cx="12" cy="12" r="3" />
         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
       </svg>
@@ -167,7 +227,13 @@ const HOW = [
   },
 ];
 
-function Section({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+function Section({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   const { ref, visible } = useInView();
   return (
     <div
@@ -194,22 +260,32 @@ export default function LandingPage({ onSignIn }: Props) {
   }, []);
 
   return (
-    <div style={{ backgroundColor: "#F4F5F7", color: "#111827", fontFamily: "var(--font-body)" }}>
-
+    <div
+      style={{
+        backgroundColor: "#F4F5F7",
+        color: "#111827",
+        fontFamily: "var(--font-body)",
+      }}
+    >
       {/* ── NAV ─────────────────────────────────────────────── */}
       <header
         className="fixed top-0 left-0 right-0 z-50 transition-all"
         style={{
           backgroundColor: scrolled ? "rgba(255,255,255,0.92)" : "transparent",
           backdropFilter: scrolled ? "blur(12px)" : "none",
-          borderBottom: scrolled ? "1px solid #D1D9E6" : "1px solid transparent",
+          borderBottom: scrolled
+            ? "1px solid #D1D9E6"
+            : "1px solid transparent",
         }}
       >
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
           <div className="flex items-center gap-2.5">
             <div
               className="w-8 h-8 rounded flex items-center justify-center text-white text-xs font-bold shrink-0"
-              style={{ backgroundColor: "#0E7C7B", fontFamily: "var(--font-display)" }}
+              style={{
+                backgroundColor: "#0E7C7B",
+                fontFamily: "var(--font-display)",
+              }}
             >
               KH
             </div>
@@ -218,9 +294,12 @@ export default function LandingPage({ onSignIn }: Props) {
                 className="text-sm font-semibold leading-none"
                 style={{ fontFamily: "var(--font-display)", color: "#111827" }}
               >
-                Kaveri Hall
+                Kabi Kazi Nazrul Islam Hall
               </p>
-              <p className="text-xs leading-none mt-0.5" style={{ color: "#9CA3AF" }}>
+              <p
+                className="text-xs leading-none mt-0.5"
+                style={{ color: "#9CA3AF" }}
+              >
                 Complaint Portal
               </p>
             </div>
@@ -240,7 +319,10 @@ export default function LandingPage({ onSignIn }: Props) {
           <button
             onClick={onSignIn}
             className="px-5 py-2 rounded text-sm font-semibold text-white transition-opacity hover:opacity-90"
-            style={{ backgroundColor: "#0E7C7B", fontFamily: "var(--font-display)" }}
+            style={{
+              backgroundColor: "#0E7C7B",
+              fontFamily: "var(--font-display)",
+            }}
           >
             Sign In
           </button>
@@ -265,7 +347,8 @@ export default function LandingPage({ onSignIn }: Props) {
         <div
           className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] pointer-events-none"
           style={{
-            background: "radial-gradient(ellipse, rgba(14,124,123,0.2) 0%, transparent 70%)",
+            background:
+              "radial-gradient(ellipse, rgba(14,124,123,0.2) 0%, transparent 70%)",
           }}
         />
 
@@ -287,7 +370,8 @@ export default function LandingPage({ onSignIn }: Props) {
                 className="text-xs font-medium"
                 style={{ color: "#5EEAD4", fontFamily: "var(--font-mono)" }}
               >
-                University of Technology · Kaveri Hall of Residence
+                Chittagong University of Engineering and Technology · Kabi Kazi
+                Nazrul Islam Hall of Residence
               </span>
             </div>
 
@@ -303,17 +387,28 @@ export default function LandingPage({ onSignIn }: Props) {
               className="text-lg leading-relaxed mb-10 max-w-xl"
               style={{ color: "#8DA0B8", fontFamily: "var(--font-body)" }}
             >
-              The Smart Hall Complaint Management System lets students file maintenance issues in seconds, gives staff a clear action board, and gives admins AI-powered insights — all in one place.
+              The Smart Hall Complaint Management System lets students file
+              maintenance issues in seconds, gives staff a clear action board,
+              and gives admins AI-powered insights — all in one place.
             </p>
 
             <div className="flex flex-wrap gap-4 mb-16">
               <button
                 onClick={onSignIn}
                 className="flex items-center gap-2 px-7 py-3.5 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90 hover:-translate-y-0.5"
-                style={{ backgroundColor: "#0E7C7B", fontFamily: "var(--font-display)" }}
+                style={{
+                  backgroundColor: "#0E7C7B",
+                  fontFamily: "var(--font-display)",
+                }}
               >
                 Get Started
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <svg
+                  className="w-4 h-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                >
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />
                 </svg>
@@ -332,7 +427,10 @@ export default function LandingPage({ onSignIn }: Props) {
             </div>
 
             {/* Stats row */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-px rounded-xl overflow-hidden" style={{ backgroundColor: "rgba(255,255,255,0.06)" }}>
+            <div
+              className="grid grid-cols-2 md:grid-cols-4 gap-px rounded-xl overflow-hidden"
+              style={{ backgroundColor: "rgba(255,255,255,0.06)" }}
+            >
               {STATS.map((s) => (
                 <div
                   key={s.label}
@@ -341,7 +439,10 @@ export default function LandingPage({ onSignIn }: Props) {
                 >
                   <p
                     className="text-2xl font-bold mb-1"
-                    style={{ fontFamily: "var(--font-display)", color: "#0D9488" }}
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      color: "#0D9488",
+                    }}
                   >
                     {s.value}
                   </p>
@@ -356,7 +457,10 @@ export default function LandingPage({ onSignIn }: Props) {
 
         {/* Scroll cue */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-          <span className="text-xs" style={{ color: "#4A6480", fontFamily: "var(--font-mono)" }}>
+          <span
+            className="text-xs"
+            style={{ color: "#4A6480", fontFamily: "var(--font-mono)" }}
+          >
             scroll
           </span>
           <div
@@ -383,7 +487,8 @@ export default function LandingPage({ onSignIn }: Props) {
               Everything you need to manage hall issues
             </h2>
             <p className="text-base max-w-xl" style={{ color: "#6B7280" }}>
-              Built around three roles, designed to eliminate the back-and-forth of manual complaint tracking.
+              Built around three roles, designed to eliminate the back-and-forth
+              of manual complaint tracking.
             </p>
           </div>
         </Section>
@@ -407,11 +512,17 @@ export default function LandingPage({ onSignIn }: Props) {
                 </div>
                 <h3
                   className="text-base font-semibold mb-2"
-                  style={{ fontFamily: "var(--font-display)", color: "#111827" }}
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    color: "#111827",
+                  }}
                 >
                   {f.title}
                 </h3>
-                <p className="text-sm leading-relaxed" style={{ color: "#6B7280" }}>
+                <p
+                  className="text-sm leading-relaxed"
+                  style={{ color: "#6B7280" }}
+                >
                   {f.desc}
                 </p>
               </div>
@@ -424,7 +535,11 @@ export default function LandingPage({ onSignIn }: Props) {
       <section
         id="how-it-works"
         className="py-24"
-        style={{ backgroundColor: "#fff", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}
+        style={{
+          backgroundColor: "#fff",
+          borderTop: "1px solid var(--border)",
+          borderBottom: "1px solid var(--border)",
+        }}
       >
         <div className="max-w-6xl mx-auto px-6">
           <Section>
@@ -447,12 +562,19 @@ export default function LandingPage({ onSignIn }: Props) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {HOW.map((h, i) => (
               <Section key={h.step}>
-                <div className="relative" style={{ transitionDelay: `${i * 80}ms` }}>
+                <div
+                  className="relative"
+                  style={{ transitionDelay: `${i * 80}ms` }}
+                >
                   {/* Connector line */}
                   {i < HOW.length - 1 && (
                     <div
                       className="hidden lg:block absolute top-5 left-full w-full h-px z-0"
-                      style={{ backgroundColor: "#D1D9E6", marginLeft: "24px", width: "calc(100% - 48px)" }}
+                      style={{
+                        backgroundColor: "#D1D9E6",
+                        marginLeft: "24px",
+                        width: "calc(100% - 48px)",
+                      }}
                     />
                   )}
                   <div
@@ -461,18 +583,27 @@ export default function LandingPage({ onSignIn }: Props) {
                   >
                     <span
                       className="text-xs font-bold"
-                      style={{ color: "#0D9488", fontFamily: "var(--font-mono)" }}
+                      style={{
+                        color: "#0D9488",
+                        fontFamily: "var(--font-mono)",
+                      }}
                     >
                       {h.step}
                     </span>
                   </div>
                   <h3
                     className="text-base font-semibold mb-2"
-                    style={{ fontFamily: "var(--font-display)", color: "#111827" }}
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      color: "#111827",
+                    }}
                   >
                     {h.title}
                   </h3>
-                  <p className="text-sm leading-relaxed" style={{ color: "#6B7280" }}>
+                  <p
+                    className="text-sm leading-relaxed"
+                    style={{ color: "#6B7280" }}
+                  >
                     {h.desc}
                   </p>
                 </div>
@@ -549,7 +680,11 @@ export default function LandingPage({ onSignIn }: Props) {
       {/* ── CHATBOT CALLOUT ─────────────────────────────────── */}
       <section
         className="py-20"
-        style={{ backgroundColor: "#fff", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}
+        style={{
+          backgroundColor: "#fff",
+          borderTop: "1px solid var(--border)",
+          borderBottom: "1px solid var(--border)",
+        }}
       >
         <div className="max-w-6xl mx-auto px-6">
           <Section>
@@ -561,33 +696,63 @@ export default function LandingPage({ onSignIn }: Props) {
               <div className="px-10 py-12">
                 <div
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full mb-6"
-                  style={{ backgroundColor: "rgba(14,124,123,0.2)", border: "1px solid rgba(14,124,123,0.35)" }}
+                  style={{
+                    backgroundColor: "rgba(14,124,123,0.2)",
+                    border: "1px solid rgba(14,124,123,0.35)",
+                  }}
                 >
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="#5EEAD4" strokeWidth="2">
+                  <svg
+                    className="w-3.5 h-3.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#5EEAD4"
+                    strokeWidth="2"
+                  >
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                   </svg>
-                  <span className="text-xs font-medium" style={{ color: "#5EEAD4", fontFamily: "var(--font-mono)" }}>
+                  <span
+                    className="text-xs font-medium"
+                    style={{ color: "#5EEAD4", fontFamily: "var(--font-mono)" }}
+                  >
                     AI Chatbot
                   </span>
                 </div>
                 <h2
                   className="text-2xl md:text-3xl font-bold mb-4"
-                  style={{ fontFamily: "var(--font-display)", color: "#E5EAF2" }}
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    color: "#E5EAF2",
+                  }}
                 >
                   Just say what's wrong.
                   <br />
                   We'll handle the rest.
                 </h2>
-                <p className="text-sm leading-relaxed mb-8" style={{ color: "#8DA0B8" }}>
-                  No complicated forms. Tell the AI assistant your issue in plain language and it automatically identifies the category, sets the urgency level, and pre-fills your complaint — ready to submit in one click.
+                <p
+                  className="text-sm leading-relaxed mb-8"
+                  style={{ color: "#8DA0B8" }}
+                >
+                  No complicated forms. Tell the AI assistant your issue in
+                  plain language and it automatically identifies the category,
+                  sets the urgency level, and pre-fills your complaint — ready
+                  to submit in one click.
                 </p>
                 <button
                   onClick={onSignIn}
                   className="flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
-                  style={{ backgroundColor: "#0E7C7B", fontFamily: "var(--font-display)" }}
+                  style={{
+                    backgroundColor: "#0E7C7B",
+                    fontFamily: "var(--font-display)",
+                  }}
                 >
                   Try it now
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                  >
                     <line x1="5" y1="12" x2="19" y2="12" />
                     <polyline points="12 5 19 12 12 19" />
                   </svg>
@@ -601,24 +766,48 @@ export default function LandingPage({ onSignIn }: Props) {
                   style={{ backgroundColor: "#fff" }}
                 >
                   {/* Chat header */}
-                  <div className="flex items-center gap-2 px-4 py-3" style={{ backgroundColor: "#0F1B2D" }}>
+                  <div
+                    className="flex items-center gap-2 px-4 py-3"
+                    style={{ backgroundColor: "#0F1B2D" }}
+                  >
                     <div
                       className="w-6 h-6 rounded-full flex items-center justify-center"
                       style={{ backgroundColor: "#0E7C7B" }}
                     >
-                      <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <svg
+                        className="w-3 h-3 text-white"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                       </svg>
                     </div>
-                    <p className="text-xs font-semibold text-white" style={{ fontFamily: "var(--font-display)" }}>
+                    <p
+                      className="text-xs font-semibold text-white"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
                       Hall Assistant
                     </p>
                   </div>
                   {/* Chat messages */}
-                  <div className="p-4 space-y-3" style={{ backgroundColor: "#F4F5F7" }}>
-                    <ChatBubble from="bot" text="Hi! Describe your issue and I'll file the complaint for you." />
-                    <ChatBubble from="user" text="My fan switch is not working" />
-                    <ChatBubble from="bot" text="Got it — Electrical · High urgency. Shall I fill the form?" />
+                  <div
+                    className="p-4 space-y-3"
+                    style={{ backgroundColor: "#F4F5F7" }}
+                  >
+                    <ChatBubble
+                      from="bot"
+                      text="Hi! Describe your issue and I'll file the complaint for you."
+                    />
+                    <ChatBubble
+                      from="user"
+                      text="My fan switch is not working"
+                    />
+                    <ChatBubble
+                      from="bot"
+                      text="Got it — Electrical · High urgency. Shall I fill the form?"
+                    />
                     <div className="flex gap-2 pl-1">
                       <span
                         className="px-3 py-1 rounded text-xs font-medium text-white"
@@ -635,7 +824,10 @@ export default function LandingPage({ onSignIn }: Props) {
                     </div>
                   </div>
                   {/* Input */}
-                  <div className="px-3 py-3 border-t flex gap-2" style={{ borderColor: "#D1D9E6" }}>
+                  <div
+                    className="px-3 py-3 border-t flex gap-2"
+                    style={{ borderColor: "#D1D9E6" }}
+                  >
                     <div
                       className="flex-1 px-3 py-2 rounded text-xs"
                       style={{ backgroundColor: "#F4F5F7", color: "#9CA3AF" }}
@@ -646,7 +838,13 @@ export default function LandingPage({ onSignIn }: Props) {
                       className="w-8 h-8 rounded flex items-center justify-center"
                       style={{ backgroundColor: "#0E7C7B" }}
                     >
-                      <svg className="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <svg
+                        className="w-3.5 h-3.5 text-white"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
                         <line x1="22" y1="2" x2="11" y2="13" />
                         <polygon points="22 2 15 22 11 13 2 9 22 2" />
                       </svg>
@@ -670,20 +868,33 @@ export default function LandingPage({ onSignIn }: Props) {
               Ready to file a complaint?
             </h2>
             <p className="text-base mb-8" style={{ color: "#6B7280" }}>
-              Sign in with your student ID or staff credentials and get started in under 30 seconds.
+              Sign in with your student ID or staff credentials and get started
+              in under 30 seconds.
             </p>
             <button
               onClick={onSignIn}
               className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-base font-semibold text-white transition-all hover:opacity-90 hover:-translate-y-0.5"
-              style={{ backgroundColor: "#0E7C7B", fontFamily: "var(--font-display)" }}
+              style={{
+                backgroundColor: "#0E7C7B",
+                fontFamily: "var(--font-display)",
+              }}
             >
               Sign In to the Portal
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <svg
+                className="w-4 h-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
                 <line x1="5" y1="12" x2="19" y2="12" />
                 <polyline points="12 5 19 12 12 19" />
               </svg>
             </button>
-            <p className="mt-4 text-xs" style={{ color: "#9CA3AF", fontFamily: "var(--font-mono)" }}>
+            <p
+              className="mt-4 text-xs"
+              style={{ color: "#9CA3AF", fontFamily: "var(--font-mono)" }}
+            >
               Students · Staff · Administrators — all roles supported
             </p>
           </div>
@@ -702,26 +913,38 @@ export default function LandingPage({ onSignIn }: Props) {
           <div className="flex items-center gap-2.5">
             <div
               className="w-7 h-7 rounded flex items-center justify-center text-white text-xs font-bold"
-              style={{ backgroundColor: "#0E7C7B", fontFamily: "var(--font-display)" }}
+              style={{
+                backgroundColor: "#0E7C7B",
+                fontFamily: "var(--font-display)",
+              }}
             >
               KH
             </div>
             <div>
-              <p className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#E5EAF2" }}>
-                Kaveri Hall of Residence
+              <p
+                className="text-sm font-semibold"
+                style={{ fontFamily: "var(--font-display)", color: "#E5EAF2" }}
+              >
+                Kabi Kazi Nazrul Islam Hall of Residence
               </p>
               <p className="text-xs" style={{ color: "#4A6480" }}>
-                University of Technology
+                Chittagong University of Engineering and Technology
               </p>
             </div>
           </div>
-          <p className="text-xs text-center" style={{ color: "#4A6480", fontFamily: "var(--font-mono)" }}>
+          <p
+            className="text-xs text-center"
+            style={{ color: "#4A6480", fontFamily: "var(--font-mono)" }}
+          >
             Smart Complaint Management System · Internal Use Only
           </p>
           <button
             onClick={onSignIn}
             className="text-xs font-medium px-4 py-2 rounded transition-colors hover:bg-white/5"
-            style={{ color: "#5EEAD4", border: "1px solid rgba(14,124,123,0.3)" }}
+            style={{
+              color: "#5EEAD4",
+              border: "1px solid rgba(14,124,123,0.3)",
+            }}
           >
             Sign In →
           </button>
@@ -733,7 +956,9 @@ export default function LandingPage({ onSignIn }: Props) {
 
 function ChatBubble({ from, text }: { from: "bot" | "user"; text: string }) {
   return (
-    <div className={`flex ${from === "user" ? "justify-end" : "justify-start"}`}>
+    <div
+      className={`flex ${from === "user" ? "justify-end" : "justify-start"}`}
+    >
       <div
         className="max-w-[85%] px-3 py-2 rounded-lg text-xs leading-relaxed"
         style={{
