@@ -1,0 +1,10 @@
+{
+  "description": "Streamline complaint management for students, staff, and admins with a user-friendly platform that tracks issues, updates statuses, and enhances communication.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
