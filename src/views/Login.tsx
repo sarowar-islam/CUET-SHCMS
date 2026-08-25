@@ -4,9 +4,10 @@ import type { User } from "../dummy";
 
 interface LoginProps {
   onLogin: (user: User) => void;
+  onBack?: () => void;
 }
 
-export default function Login({ onLogin }: LoginProps) {
+export default function Login({ onLogin, onBack }: LoginProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -99,6 +100,19 @@ export default function Login({ onLogin }: LoginProps) {
       {/* Right panel — login form */}
       <div className="flex-1 flex items-center justify-center px-6">
         <div className="w-full max-w-sm">
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="flex items-center gap-1.5 text-xs mb-8 transition-colors hover:opacity-70"
+              style={{ color: "#6B7280", fontFamily: "var(--font-body)" }}
+            >
+              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="19" y1="12" x2="5" y2="12" />
+                <polyline points="12 19 5 12 12 5" />
+              </svg>
+              Back to home
+            </button>
+          )}
           <div className="mb-8">
             <h2
               className="text-2xl font-bold mb-1"
