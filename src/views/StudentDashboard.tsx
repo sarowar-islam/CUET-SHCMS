@@ -6,11 +6,7 @@ import type {
   ComplaintStatus,
   UrgencyLevel,
 } from "../dummy";
-import {
-  COMPLAINTS,
-  CATEGORY_LABELS,
-  STATUS_LABELS,
-} from "../dummy";
+import { COMPLAINTS, CATEGORY_LABELS, STATUS_LABELS } from "../dummy";
 import Sidebar from "../components/Sidebar";
 import { StatusBadge, UrgencyBadge } from "../components/StatusBadge";
 import Chatbot from "../components/Chatbot";
@@ -22,7 +18,13 @@ const NAV_ITEMS = [
     id: "dashboard",
     label: "Dashboard",
     icon: (
-      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        className="w-4 h-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <rect x="3" y="3" width="7" height="7" />
         <rect x="14" y="3" width="7" height="7" />
         <rect x="14" y="14" width="7" height="7" />
@@ -34,7 +36,13 @@ const NAV_ITEMS = [
     id: "submit",
     label: "New Complaint",
     icon: (
-      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        className="w-4 h-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <path d="M12 5v14M5 12h14" />
       </svg>
     ),
@@ -43,7 +51,13 @@ const NAV_ITEMS = [
     id: "my_complaints",
     label: "My Complaints",
     icon: (
-      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        className="w-4 h-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
         <polyline points="14 2 14 8 20 8" />
         <line x1="16" y1="13" x2="8" y2="13" />
@@ -87,12 +101,14 @@ export default function StudentDashboard({ user, onLogout }: Props) {
   // My complaints
   const myComplaints = useMemo(
     () => complaints.filter((c) => c.studentId === user.id),
-    [complaints, user.id]
+    [complaints, user.id],
   );
 
   // Dashboard filters
   const [filterStatus, setFilterStatus] = useState<ComplaintStatus | "">("");
-  const [filterCategory, setFilterCategory] = useState<ComplaintCategory | "">("");
+  const [filterCategory, setFilterCategory] = useState<ComplaintCategory | "">(
+    "",
+  );
   const [filterDate, setFilterDate] = useState("");
 
   const filteredComplaints = useMemo(() => {
@@ -114,13 +130,20 @@ export default function StudentDashboard({ user, onLogout }: Props) {
   });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null);
+  const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(
+    null,
+  );
 
   const handleFormChange = (field: keyof ComplaintFormData, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleChatbotFill = (data: { title: string; description: string; category: ComplaintCategory; urgency: UrgencyLevel }) => {
+  const handleChatbotFill = (data: {
+    title: string;
+    description: string;
+    category: ComplaintCategory;
+    urgency: UrgencyLevel;
+  }) => {
     setForm((prev) => ({
       ...prev,
       title: data.title,
@@ -152,7 +175,13 @@ export default function StudentDashboard({ user, onLogout }: Props) {
       setComplaints((prev) => [...prev, newComplaint]);
       setSubmitting(false);
       setSubmitted(true);
-      setForm({ title: "", room: user.room ?? "", description: "", category: "electrical", urgency: "medium" });
+      setForm({
+        title: "",
+        room: user.room ?? "",
+        description: "",
+        category: "electrical",
+        urgency: "medium",
+      });
       setTimeout(() => {
         setSubmitted(false);
         setTab("my_complaints");
@@ -191,7 +220,13 @@ export default function StudentDashboard({ user, onLogout }: Props) {
               className="mb-2 inline-flex items-center justify-center rounded p-1.5 text-slate-600 hover:bg-slate-100 md:hidden"
               aria-label="Open navigation"
             >
-              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                className="h-5 w-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <path d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
@@ -210,9 +245,18 @@ export default function StudentDashboard({ user, onLogout }: Props) {
           <button
             onClick={() => setShowChatbot(true)}
             className="flex items-center gap-2 px-4 py-2 rounded text-sm font-medium text-white transition-opacity hover:opacity-90"
-            style={{ backgroundColor: "#0E7C7B", fontFamily: "var(--font-display)" }}
+            style={{
+              backgroundColor: "#0E7C7B",
+              fontFamily: "var(--font-display)",
+            }}
           >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              className="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
             <span className="hidden sm:inline">AI Assistant</span>
@@ -228,23 +272,40 @@ export default function StudentDashboard({ user, onLogout }: Props) {
                 {[
                   { label: "Total", value: stats.total, color: "#1A3A5C" },
                   { label: "Pending", value: stats.pending, color: "#D97706" },
-                  { label: "In Progress", value: stats.in_progress, color: "#2563EB" },
-                  { label: "Resolved", value: stats.resolved, color: "#059669" },
+                  {
+                    label: "In Progress",
+                    value: stats.in_progress,
+                    color: "#2563EB",
+                  },
+                  {
+                    label: "Resolved",
+                    value: stats.resolved,
+                    color: "#059669",
+                  },
                 ].map((s) => (
                   <div
                     key={s.label}
                     className="rounded-lg p-5"
-                    style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}
+                    style={{
+                      backgroundColor: "#fff",
+                      border: "1px solid var(--border)",
+                    }}
                   >
                     <p
                       className="text-xs font-medium uppercase tracking-wider mb-2"
-                      style={{ color: "#6B7280", fontFamily: "var(--font-mono)" }}
+                      style={{
+                        color: "#6B7280",
+                        fontFamily: "var(--font-mono)",
+                      }}
                     >
                       {s.label}
                     </p>
                     <p
                       className="text-3xl font-bold"
-                      style={{ color: s.color, fontFamily: "var(--font-display)" }}
+                      style={{
+                        color: s.color,
+                        fontFamily: "var(--font-display)",
+                      }}
                     >
                       {s.value}
                     </p>
@@ -255,41 +316,64 @@ export default function StudentDashboard({ user, onLogout }: Props) {
               {/* Filters */}
               <div
                 className="rounded-lg p-4 flex flex-wrap gap-3 items-end"
-                style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}
+                style={{
+                  backgroundColor: "#fff",
+                  border: "1px solid var(--border)",
+                }}
               >
                 <div>
                   <label
                     className="block text-xs font-medium mb-1"
-                    style={{ color: "#374151", fontFamily: "var(--font-display)" }}
+                    style={{
+                      color: "#374151",
+                      fontFamily: "var(--font-display)",
+                    }}
                   >
                     Status
                   </label>
                   <select
                     value={filterStatus}
-                    onChange={(e) => setFilterStatus(e.target.value as ComplaintStatus | "")}
+                    onChange={(e) =>
+                      setFilterStatus(e.target.value as ComplaintStatus | "")
+                    }
                     className="px-3 py-1.5 rounded text-sm border outline-none"
-                    style={{ borderColor: "var(--border)", fontFamily: "var(--font-body)" }}
+                    style={{
+                      borderColor: "var(--border)",
+                      fontFamily: "var(--font-body)",
+                    }}
                   >
                     <option value="">All statuses</option>
-                    {(Object.keys(STATUS_LABELS) as ComplaintStatus[]).map((s) => (
-                      <option key={s} value={s}>
-                        {STATUS_LABELS[s]}
-                      </option>
-                    ))}
+                    {(Object.keys(STATUS_LABELS) as ComplaintStatus[]).map(
+                      (s) => (
+                        <option key={s} value={s}>
+                          {STATUS_LABELS[s]}
+                        </option>
+                      ),
+                    )}
                   </select>
                 </div>
                 <div>
                   <label
                     className="block text-xs font-medium mb-1"
-                    style={{ color: "#374151", fontFamily: "var(--font-display)" }}
+                    style={{
+                      color: "#374151",
+                      fontFamily: "var(--font-display)",
+                    }}
                   >
                     Category
                   </label>
                   <select
                     value={filterCategory}
-                    onChange={(e) => setFilterCategory(e.target.value as ComplaintCategory | "")}
+                    onChange={(e) =>
+                      setFilterCategory(
+                        e.target.value as ComplaintCategory | "",
+                      )
+                    }
                     className="px-3 py-1.5 rounded text-sm border outline-none"
-                    style={{ borderColor: "var(--border)", fontFamily: "var(--font-body)" }}
+                    style={{
+                      borderColor: "var(--border)",
+                      fontFamily: "var(--font-body)",
+                    }}
                   >
                     <option value="">All categories</option>
                     {CATEGORIES.map((c) => (
@@ -302,7 +386,10 @@ export default function StudentDashboard({ user, onLogout }: Props) {
                 <div>
                   <label
                     className="block text-xs font-medium mb-1"
-                    style={{ color: "#374151", fontFamily: "var(--font-display)" }}
+                    style={{
+                      color: "#374151",
+                      fontFamily: "var(--font-display)",
+                    }}
                   >
                     Date
                   </label>
@@ -311,11 +398,18 @@ export default function StudentDashboard({ user, onLogout }: Props) {
                     value={filterDate}
                     onChange={(e) => setFilterDate(e.target.value)}
                     className="px-3 py-1.5 rounded text-sm border outline-none"
-                    style={{ borderColor: "var(--border)", fontFamily: "var(--font-body)" }}
+                    style={{
+                      borderColor: "var(--border)",
+                      fontFamily: "var(--font-body)",
+                    }}
                   />
                 </div>
                 <button
-                  onClick={() => { setFilterStatus(""); setFilterCategory(""); setFilterDate(""); }}
+                  onClick={() => {
+                    setFilterStatus("");
+                    setFilterCategory("");
+                    setFilterDate("");
+                  }}
                   className="px-3 py-1.5 rounded text-sm border transition-colors hover:bg-gray-50"
                   style={{ borderColor: "var(--border)", color: "#6B7280" }}
                 >
@@ -328,7 +422,10 @@ export default function StudentDashboard({ user, onLogout }: Props) {
                 {filteredComplaints.length === 0 ? (
                   <div
                     className="rounded-lg py-12 text-center"
-                    style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}
+                    style={{
+                      backgroundColor: "#fff",
+                      border: "1px solid var(--border)",
+                    }}
                   >
                     <p className="text-sm" style={{ color: "#6B7280" }}>
                       No complaints match your filters.
@@ -336,7 +433,11 @@ export default function StudentDashboard({ user, onLogout }: Props) {
                   </div>
                 ) : (
                   filteredComplaints.map((c) => (
-                    <ComplaintCard key={c.id} complaint={c} onClick={() => setSelectedComplaint(c)} />
+                    <ComplaintCard
+                      key={c.id}
+                      complaint={c}
+                      onClick={() => setSelectedComplaint(c)}
+                    />
                   ))
                 )}
               </div>
@@ -348,12 +449,18 @@ export default function StudentDashboard({ user, onLogout }: Props) {
             <div className="max-w-2xl">
               <div
                 className="rounded-lg p-4 sm:p-6 lg:p-8"
-                style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}
+                style={{
+                  backgroundColor: "#fff",
+                  border: "1px solid var(--border)",
+                }}
               >
                 <div className="flex items-center justify-between mb-6">
                   <h2
                     className="text-lg font-semibold"
-                    style={{ fontFamily: "var(--font-display)", color: "#111827" }}
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      color: "#111827",
+                    }}
                   >
                     Submit a Complaint
                   </h2>
@@ -362,7 +469,13 @@ export default function StudentDashboard({ user, onLogout }: Props) {
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium border transition-colors hover:bg-gray-50"
                     style={{ borderColor: "var(--border)", color: "#0E7C7B" }}
                   >
-                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg
+                      className="w-3.5 h-3.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
                       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                     </svg>
                     Use AI Assistant
@@ -372,12 +485,25 @@ export default function StudentDashboard({ user, onLogout }: Props) {
                 {submitted && (
                   <div
                     className="mb-6 px-4 py-3 rounded-lg flex items-center gap-2"
-                    style={{ backgroundColor: "#ECFDF5", border: "1px solid #6EE7B7", color: "#065F46" }}
+                    style={{
+                      backgroundColor: "#ECFDF5",
+                      border: "1px solid #6EE7B7",
+                      color: "#065F46",
+                    }}
                   >
-                    <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <svg
+                      className="w-4 h-4 shrink-0"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                    >
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
-                    <span className="text-sm" style={{ fontFamily: "var(--font-body)" }}>
+                    <span
+                      className="text-sm"
+                      style={{ fontFamily: "var(--font-body)" }}
+                    >
                       Complaint submitted successfully! Redirecting…
                     </span>
                   </div>
@@ -394,7 +520,9 @@ export default function StudentDashboard({ user, onLogout }: Props) {
                     <input
                       type="text"
                       value={form.title}
-                      onChange={(e) => handleFormChange("title", e.target.value)}
+                      onChange={(e) =>
+                        handleFormChange("title", e.target.value)
+                      }
                       required
                       placeholder="e.g. Fan switch not working"
                       className="field-input"
@@ -407,16 +535,23 @@ export default function StudentDashboard({ user, onLogout }: Props) {
                       <input
                         type="text"
                         value={form.room}
-                        onChange={(e) => handleFormChange("room", e.target.value)}
+                        onChange={(e) =>
+                          handleFormChange("room", e.target.value)
+                        }
                         required
                         placeholder="e.g. A-204"
-                        style={{ ...fieldStyle, fontFamily: "var(--font-mono)" }}
+                        style={{
+                          ...fieldStyle,
+                          fontFamily: "var(--font-mono)",
+                        }}
                       />
                     </FormField>
                     <FormField label="Category" required>
                       <select
                         value={form.category}
-                        onChange={(e) => handleFormChange("category", e.target.value)}
+                        onChange={(e) =>
+                          handleFormChange("category", e.target.value)
+                        }
                         style={fieldStyle}
                       >
                         {CATEGORIES.map((c) => (
@@ -445,8 +580,12 @@ export default function StudentDashboard({ user, onLogout }: Props) {
                             onClick={() => handleFormChange("urgency", u)}
                             className="px-3 py-1.5 rounded text-xs font-medium border transition-all capitalize"
                             style={{
-                              borderColor: isSelected ? urgencyColor[u] : "var(--border)",
-                              backgroundColor: isSelected ? urgencyColor[u] + "15" : "transparent",
+                              borderColor: isSelected
+                                ? urgencyColor[u]
+                                : "var(--border)",
+                              backgroundColor: isSelected
+                                ? urgencyColor[u] + "15"
+                                : "transparent",
                               color: isSelected ? urgencyColor[u] : "#6B7280",
                               fontFamily: "var(--font-mono)",
                             }}
@@ -461,7 +600,9 @@ export default function StudentDashboard({ user, onLogout }: Props) {
                   <FormField label="Detailed Description" required>
                     <textarea
                       value={form.description}
-                      onChange={(e) => handleFormChange("description", e.target.value)}
+                      onChange={(e) =>
+                        handleFormChange("description", e.target.value)
+                      }
                       required
                       rows={5}
                       placeholder="Describe the issue in detail, including when it started and how it affects you…"
@@ -474,13 +615,24 @@ export default function StudentDashboard({ user, onLogout }: Props) {
                       type="submit"
                       disabled={submitting || submitted}
                       className="px-6 py-2.5 rounded text-sm font-semibold text-white disabled:opacity-60 transition-opacity hover:opacity-90"
-                      style={{ backgroundColor: "#0E7C7B", fontFamily: "var(--font-display)" }}
+                      style={{
+                        backgroundColor: "#0E7C7B",
+                        fontFamily: "var(--font-display)",
+                      }}
                     >
                       {submitting ? "Submitting…" : "Submit Complaint"}
                     </button>
                     <button
                       type="button"
-                      onClick={() => setForm({ title: "", room: user.room ?? "", description: "", category: "electrical", urgency: "medium" })}
+                      onClick={() =>
+                        setForm({
+                          title: "",
+                          room: user.room ?? "",
+                          description: "",
+                          category: "electrical",
+                          urgency: "medium",
+                        })
+                      }
                       className="px-6 py-2.5 rounded text-sm font-medium border transition-colors hover:bg-gray-50"
                       style={{ borderColor: "var(--border)", color: "#6B7280" }}
                     >
@@ -498,7 +650,10 @@ export default function StudentDashboard({ user, onLogout }: Props) {
               {myComplaints.length === 0 ? (
                 <div
                   className="rounded-lg py-16 text-center"
-                  style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}
+                  style={{
+                    backgroundColor: "#fff",
+                    border: "1px solid var(--border)",
+                  }}
                 >
                   <p className="text-sm mb-3" style={{ color: "#6B7280" }}>
                     You have not submitted any complaints yet.
@@ -513,7 +668,11 @@ export default function StudentDashboard({ user, onLogout }: Props) {
                 </div>
               ) : (
                 myComplaints.map((c) => (
-                  <ComplaintCard key={c.id} complaint={c} onClick={() => setSelectedComplaint(c)} />
+                  <ComplaintCard
+                    key={c.id}
+                    complaint={c}
+                    onClick={() => setSelectedComplaint(c)}
+                  />
                 ))
               )}
             </div>
@@ -523,18 +682,30 @@ export default function StudentDashboard({ user, onLogout }: Props) {
 
       {/* Chatbot */}
       {showChatbot && (
-        <Chatbot onFillForm={handleChatbotFill} onClose={() => setShowChatbot(false)} />
+        <Chatbot
+          onFillForm={handleChatbotFill}
+          onClose={() => setShowChatbot(false)}
+        />
       )}
 
       {/* Detail Modal */}
       {selectedComplaint && (
-        <ComplaintDetailModal complaint={selectedComplaint} onClose={() => setSelectedComplaint(null)} />
+        <ComplaintDetailModal
+          complaint={selectedComplaint}
+          onClose={() => setSelectedComplaint(null)}
+        />
       )}
     </div>
   );
 }
 
-function ComplaintCard({ complaint: c, onClick }: { complaint: Complaint; onClick: () => void }) {
+function ComplaintCard({
+  complaint: c,
+  onClick,
+}: {
+  complaint: Complaint;
+  onClick: () => void;
+}) {
   return (
     <button
       onClick={onClick}
@@ -550,8 +721,13 @@ function ComplaintCard({ complaint: c, onClick }: { complaint: Complaint; onClic
             >
               {c.id}
             </span>
-            <span className="text-xs" style={{ color: "#D1D5DB" }}>·</span>
-            <span className="text-xs" style={{ color: "#6B7280", fontFamily: "var(--font-mono)" }}>
+            <span className="text-xs" style={{ color: "#D1D5DB" }}>
+              ·
+            </span>
+            <span
+              className="text-xs"
+              style={{ color: "#6B7280", fontFamily: "var(--font-mono)" }}
+            >
               Room {c.room}
             </span>
           </div>
@@ -593,7 +769,13 @@ function ComplaintCard({ complaint: c, onClick }: { complaint: Complaint; onClic
   );
 }
 
-function ComplaintDetailModal({ complaint: c, onClose }: { complaint: Complaint; onClose: () => void }) {
+function ComplaintDetailModal({
+  complaint: c,
+  onClose,
+}: {
+  complaint: Complaint;
+  onClose: () => void;
+}) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -623,8 +805,17 @@ function ComplaintDetailModal({ complaint: c, onClose }: { complaint: Complaint;
               {c.title}
             </h2>
           </div>
-          <button onClick={onClose} className="p-1 text-gray-400 hover:text-gray-700">
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <button
+            onClick={onClose}
+            className="p-1 text-gray-400 hover:text-gray-700"
+          >
+            <svg
+              className="w-5 h-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
@@ -637,7 +828,11 @@ function ComplaintDetailModal({ complaint: c, onClose }: { complaint: Complaint;
             <UrgencyBadge urgency={c.urgency} />
             <span
               className="text-xs px-2 py-0.5 rounded border"
-              style={{ borderColor: "var(--border)", color: "#6B7280", fontFamily: "var(--font-mono)" }}
+              style={{
+                borderColor: "var(--border)",
+                color: "#6B7280",
+                fontFamily: "var(--font-mono)",
+              }}
             >
               {CATEGORY_LABELS[c.category]}
             </span>
@@ -645,18 +840,35 @@ function ComplaintDetailModal({ complaint: c, onClose }: { complaint: Complaint;
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
             <div>
-              <p className="text-xs font-medium mb-1" style={{ color: "#9CA3AF" }}>Room</p>
-              <p style={{ fontFamily: "var(--font-mono)", color: "#111827" }}>{c.room}</p>
+              <p
+                className="text-xs font-medium mb-1"
+                style={{ color: "#9CA3AF" }}
+              >
+                Room
+              </p>
+              <p style={{ fontFamily: "var(--font-mono)", color: "#111827" }}>
+                {c.room}
+              </p>
             </div>
             <div>
-              <p className="text-xs font-medium mb-1" style={{ color: "#9CA3AF" }}>Submitted</p>
+              <p
+                className="text-xs font-medium mb-1"
+                style={{ color: "#9CA3AF" }}
+              >
+                Submitted
+              </p>
               <p style={{ fontFamily: "var(--font-mono)", color: "#111827" }}>
                 {new Date(c.submittedAt).toLocaleString("en-IN")}
               </p>
             </div>
             {c.assignedTo && (
               <div>
-                <p className="text-xs font-medium mb-1" style={{ color: "#9CA3AF" }}>Assigned to</p>
+                <p
+                  className="text-xs font-medium mb-1"
+                  style={{ color: "#9CA3AF" }}
+                >
+                  Assigned to
+                </p>
                 <p style={{ color: "#111827" }}>{c.assignedTo}</p>
               </div>
             )}
@@ -694,9 +906,13 @@ function ComplaintDetailModal({ complaint: c, onClose }: { complaint: Complaint;
                   >
                     <p
                       className="text-xs mb-1"
-                      style={{ color: "#9CA3AF", fontFamily: "var(--font-mono)" }}
+                      style={{
+                        color: "#9CA3AF",
+                        fontFamily: "var(--font-mono)",
+                      }}
                     >
-                      {u.byName} · {new Date(u.timestamp).toLocaleString("en-IN")}
+                      {u.byName} ·{" "}
+                      {new Date(u.timestamp).toLocaleString("en-IN")}
                     </p>
                     <p className="text-sm" style={{ color: "#374151" }}>
                       {u.message}
@@ -724,7 +940,15 @@ const fieldStyle: React.CSSProperties = {
   outline: "none",
 };
 
-function FormField({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+function FormField({
+  label,
+  required,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <div>
       <label
@@ -738,7 +962,15 @@ function FormField({ label, required, children }: { label: string; required?: bo
   );
 }
 
-function ReadonlyField({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
+function ReadonlyField({
+  label,
+  value,
+  mono,
+}: {
+  label: string;
+  value: string;
+  mono?: boolean;
+}) {
   return (
     <div>
       <label

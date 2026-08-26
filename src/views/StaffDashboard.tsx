@@ -1,5 +1,10 @@
 import { useState, useMemo } from "react";
-import type { Complaint, ComplaintCategory, ComplaintStatus, User } from "../dummy";
+import type {
+  Complaint,
+  ComplaintCategory,
+  ComplaintStatus,
+  User,
+} from "../dummy";
 import { COMPLAINTS, CATEGORY_LABELS, STATUS_LABELS, USERS } from "../dummy";
 import Sidebar from "../components/Sidebar";
 import { StatusBadge, UrgencyBadge } from "../components/StatusBadge";
@@ -11,7 +16,13 @@ const NAV_ITEMS = [
     id: "dashboard",
     label: "All Complaints",
     icon: (
-      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        className="w-4 h-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <rect x="3" y="3" width="7" height="7" />
         <rect x="14" y="3" width="7" height="7" />
         <rect x="14" y="14" width="7" height="7" />
@@ -23,7 +34,13 @@ const NAV_ITEMS = [
     id: "assigned",
     label: "My Assignments",
     icon: (
-      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        className="w-4 h-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
         <circle cx="12" cy="7" r="4" />
       </svg>
@@ -31,7 +48,12 @@ const NAV_ITEMS = [
   },
 ];
 
-const STATUSES: ComplaintStatus[] = ["pending", "in_progress", "resolved", "rejected"];
+const STATUSES: ComplaintStatus[] = [
+  "pending",
+  "in_progress",
+  "resolved",
+  "rejected",
+];
 const CATEGORIES: ComplaintCategory[] = [
   "electrical",
   "plumbing",
@@ -51,17 +73,26 @@ export default function StaffDashboard({ user, onLogout }: Props) {
   const [tab, setTab] = useState<Tab>("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [complaints, setComplaints] = useState<Complaint[]>(COMPLAINTS);
-  const [filterCategory, setFilterCategory] = useState<ComplaintCategory | "">("");
+  const [filterCategory, setFilterCategory] = useState<ComplaintCategory | "">(
+    "",
+  );
   const [filterStatus, setFilterStatus] = useState<ComplaintStatus | "">("");
-  const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null);
+  const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(
+    null,
+  );
 
   const displayed = useMemo(() => {
-    let list = tab === "assigned"
-      ? complaints.filter((c) => c.assignedTo === user.id)
-      : complaints;
-    if (filterCategory) list = list.filter((c) => c.category === filterCategory);
+    let list =
+      tab === "assigned"
+        ? complaints.filter((c) => c.assignedTo === user.id)
+        : complaints;
+    if (filterCategory)
+      list = list.filter((c) => c.category === filterCategory);
     if (filterStatus) list = list.filter((c) => c.status === filterStatus);
-    return list.sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime());
+    return list.sort(
+      (a, b) =>
+        new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime(),
+    );
   }, [complaints, tab, user.id, filterCategory, filterStatus]);
 
   const stats = {
@@ -73,7 +104,11 @@ export default function StaffDashboard({ user, onLogout }: Props) {
 
   const handleUpdateComplaint = (id: string, updates: Partial<Complaint>) => {
     setComplaints((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, ...updates, updatedAt: new Date().toISOString() } : c))
+      prev.map((c) =>
+        c.id === id
+          ? { ...c, ...updates, updatedAt: new Date().toISOString() }
+          : c,
+      ),
     );
     if (selectedComplaint?.id === id) {
       setSelectedComplaint((prev) => (prev ? { ...prev, ...updates } : null));
@@ -104,7 +139,13 @@ export default function StaffDashboard({ user, onLogout }: Props) {
               className="mb-2 inline-flex items-center justify-center rounded p-1.5 text-slate-600 hover:bg-slate-100 md:hidden"
               aria-label="Open navigation"
             >
-              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                className="h-5 w-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <path d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
@@ -136,14 +177,25 @@ export default function StaffDashboard({ user, onLogout }: Props) {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {[
               { label: "Total", value: stats.all, color: "#1A3A5C" },
-              { label: "Assigned to me", value: stats.assigned, color: "#0E7C7B" },
-              { label: "In Progress", value: stats.in_progress, color: "#2563EB" },
+              {
+                label: "Assigned to me",
+                value: stats.assigned,
+                color: "#0E7C7B",
+              },
+              {
+                label: "In Progress",
+                value: stats.in_progress,
+                color: "#2563EB",
+              },
               { label: "Resolved", value: stats.resolved, color: "#059669" },
             ].map((s) => (
               <div
                 key={s.label}
                 className="rounded-lg p-5"
-                style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}
+                style={{
+                  backgroundColor: "#fff",
+                  border: "1px solid var(--border)",
+                }}
               >
                 <p
                   className="text-xs font-medium uppercase tracking-wider mb-2"
@@ -164,7 +216,10 @@ export default function StaffDashboard({ user, onLogout }: Props) {
           {/* Filters */}
           <div
             className="rounded-lg p-4 flex flex-wrap gap-3 items-end"
-            style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}
+            style={{
+              backgroundColor: "#fff",
+              border: "1px solid var(--border)",
+            }}
           >
             <div>
               <label
@@ -175,7 +230,9 @@ export default function StaffDashboard({ user, onLogout }: Props) {
               </label>
               <select
                 value={filterCategory}
-                onChange={(e) => setFilterCategory(e.target.value as ComplaintCategory | "")}
+                onChange={(e) =>
+                  setFilterCategory(e.target.value as ComplaintCategory | "")
+                }
                 className="px-3 py-1.5 rounded text-sm border outline-none"
                 style={{ borderColor: "var(--border)" }}
               >
@@ -196,7 +253,9 @@ export default function StaffDashboard({ user, onLogout }: Props) {
               </label>
               <select
                 value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value as ComplaintStatus | "")}
+                onChange={(e) =>
+                  setFilterStatus(e.target.value as ComplaintStatus | "")
+                }
                 className="px-3 py-1.5 rounded text-sm border outline-none"
                 style={{ borderColor: "var(--border)" }}
               >
@@ -209,7 +268,10 @@ export default function StaffDashboard({ user, onLogout }: Props) {
               </select>
             </div>
             <button
-              onClick={() => { setFilterCategory(""); setFilterStatus(""); }}
+              onClick={() => {
+                setFilterCategory("");
+                setFilterStatus("");
+              }}
               className="px-3 py-1.5 rounded text-sm border transition-colors hover:bg-gray-50"
               style={{ borderColor: "var(--border)", color: "#6B7280" }}
             >
@@ -226,16 +288,36 @@ export default function StaffDashboard({ user, onLogout }: Props) {
           {/* Table */}
           <div
             className="rounded-lg overflow-x-auto"
-            style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}
+            style={{
+              backgroundColor: "#fff",
+              border: "1px solid var(--border)",
+            }}
           >
             <table className="min-w-[760px] w-full text-sm">
               <thead>
-                <tr style={{ backgroundColor: "#F4F5F7", borderBottom: "1px solid var(--border)" }}>
-                  {["ID", "Student / Room", "Title", "Category", "Urgency", "Status", "Date", "Actions"].map((h) => (
+                <tr
+                  style={{
+                    backgroundColor: "#F4F5F7",
+                    borderBottom: "1px solid var(--border)",
+                  }}
+                >
+                  {[
+                    "ID",
+                    "Student / Room",
+                    "Title",
+                    "Category",
+                    "Urgency",
+                    "Status",
+                    "Date",
+                    "Actions",
+                  ].map((h) => (
                     <th
                       key={h}
                       className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider"
-                      style={{ color: "#6B7280", fontFamily: "var(--font-mono)" }}
+                      style={{
+                        color: "#6B7280",
+                        fontFamily: "var(--font-mono)",
+                      }}
                     >
                       {h}
                     </th>
@@ -245,7 +327,11 @@ export default function StaffDashboard({ user, onLogout }: Props) {
               <tbody>
                 {displayed.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="px-4 py-10 text-center text-sm" style={{ color: "#9CA3AF" }}>
+                    <td
+                      colSpan={8}
+                      className="px-4 py-10 text-center text-sm"
+                      style={{ color: "#9CA3AF" }}
+                    >
                       No complaints match the current filters.
                     </td>
                   </tr>
@@ -254,32 +340,56 @@ export default function StaffDashboard({ user, onLogout }: Props) {
                     <tr
                       key={c.id}
                       className="transition-colors hover:bg-gray-50 cursor-pointer"
-                      style={{ borderBottom: i < displayed.length - 1 ? "1px solid var(--border)" : undefined }}
+                      style={{
+                        borderBottom:
+                          i < displayed.length - 1
+                            ? "1px solid var(--border)"
+                            : undefined,
+                      }}
                       onClick={() => setSelectedComplaint(c)}
                     >
                       <td
                         className="px-4 py-3"
-                        style={{ fontFamily: "var(--font-mono)", color: "#9CA3AF", fontSize: "12px" }}
+                        style={{
+                          fontFamily: "var(--font-mono)",
+                          color: "#9CA3AF",
+                          fontSize: "12px",
+                        }}
                       >
                         {c.id}
                       </td>
                       <td className="px-4 py-3">
-                        <p className="font-medium text-xs" style={{ color: "#111827" }}>
+                        <p
+                          className="font-medium text-xs"
+                          style={{ color: "#111827" }}
+                        >
                           {c.studentName}
                         </p>
-                        <p style={{ color: "#9CA3AF", fontSize: "11px", fontFamily: "var(--font-mono)" }}>
+                        <p
+                          style={{
+                            color: "#9CA3AF",
+                            fontSize: "11px",
+                            fontFamily: "var(--font-mono)",
+                          }}
+                        >
                           Room {c.room}
                         </p>
                       </td>
                       <td className="px-4 py-3 max-w-[180px]">
-                        <p className="truncate text-xs font-medium" style={{ color: "#111827" }}>
+                        <p
+                          className="truncate text-xs font-medium"
+                          style={{ color: "#111827" }}
+                        >
                           {c.title}
                         </p>
                       </td>
                       <td className="px-4 py-3">
                         <span
                           className="text-xs"
-                          style={{ color: "#6B7280", fontFamily: "var(--font-mono)" }}
+                          style={{
+                            color: "#6B7280",
+                            fontFamily: "var(--font-mono)",
+                          }}
                         >
                           {CATEGORY_LABELS[c.category]}
                         </span>
@@ -292,14 +402,20 @@ export default function StaffDashboard({ user, onLogout }: Props) {
                       </td>
                       <td
                         className="px-4 py-3 text-xs"
-                        style={{ color: "#9CA3AF", fontFamily: "var(--font-mono)" }}
+                        style={{
+                          color: "#9CA3AF",
+                          fontFamily: "var(--font-mono)",
+                        }}
                       >
                         {new Date(c.submittedAt).toLocaleDateString("en-IN", {
                           day: "numeric",
                           month: "short",
                         })}
                       </td>
-                      <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+                      <td
+                        className="px-4 py-3"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <select
                           value={c.status}
                           onChange={(e) =>
@@ -309,7 +425,10 @@ export default function StaffDashboard({ user, onLogout }: Props) {
                             })
                           }
                           className="text-xs px-2 py-1 rounded border outline-none"
-                          style={{ borderColor: "var(--border)", fontFamily: "var(--font-mono)" }}
+                          style={{
+                            borderColor: "var(--border)",
+                            fontFamily: "var(--font-mono)",
+                          }}
                         >
                           {STATUSES.map((s) => (
                             <option key={s} value={s}>
@@ -407,8 +526,17 @@ function StaffUpdateModal({
               {c.title}
             </h2>
           </div>
-          <button onClick={onClose} className="p-1 text-gray-400 hover:text-gray-700">
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <button
+            onClick={onClose}
+            className="p-1 text-gray-400 hover:text-gray-700"
+          >
+            <svg
+              className="w-5 h-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
@@ -423,33 +551,76 @@ function StaffUpdateModal({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
             <div>
-              <p className="text-xs font-medium mb-1" style={{ color: "#9CA3AF" }}>Student</p>
+              <p
+                className="text-xs font-medium mb-1"
+                style={{ color: "#9CA3AF" }}
+              >
+                Student
+              </p>
               <p style={{ color: "#111827" }}>{c.studentName}</p>
-              <p style={{ color: "#6B7280", fontSize: "11px", fontFamily: "var(--font-mono)" }}>
+              <p
+                style={{
+                  color: "#6B7280",
+                  fontSize: "11px",
+                  fontFamily: "var(--font-mono)",
+                }}
+              >
                 {student?.email}
               </p>
             </div>
             <div>
-              <p className="text-xs font-medium mb-1" style={{ color: "#9CA3AF" }}>Room</p>
-              <p style={{ fontFamily: "var(--font-mono)", color: "#111827" }}>{c.room}</p>
+              <p
+                className="text-xs font-medium mb-1"
+                style={{ color: "#9CA3AF" }}
+              >
+                Room
+              </p>
+              <p style={{ fontFamily: "var(--font-mono)", color: "#111827" }}>
+                {c.room}
+              </p>
             </div>
           </div>
 
           <div>
-            <p className="text-xs font-medium mb-2" style={{ color: "#9CA3AF" }}>Description</p>
-            <p className="text-sm leading-relaxed" style={{ color: "#374151" }}>{c.description}</p>
+            <p
+              className="text-xs font-medium mb-2"
+              style={{ color: "#9CA3AF" }}
+            >
+              Description
+            </p>
+            <p className="text-sm leading-relaxed" style={{ color: "#374151" }}>
+              {c.description}
+            </p>
           </div>
 
           {c.updates.length > 0 && (
             <div>
-              <p className="text-xs font-medium mb-3" style={{ color: "#9CA3AF" }}>Updates</p>
+              <p
+                className="text-xs font-medium mb-3"
+                style={{ color: "#9CA3AF" }}
+              >
+                Updates
+              </p>
               <div className="space-y-3">
                 {c.updates.map((u) => (
-                  <div key={u.id} className="pl-3 border-l-2" style={{ borderColor: "#0E7C7B" }}>
-                    <p className="text-xs mb-1" style={{ color: "#9CA3AF", fontFamily: "var(--font-mono)" }}>
-                      {u.byName} · {new Date(u.timestamp).toLocaleString("en-IN")}
+                  <div
+                    key={u.id}
+                    className="pl-3 border-l-2"
+                    style={{ borderColor: "#0E7C7B" }}
+                  >
+                    <p
+                      className="text-xs mb-1"
+                      style={{
+                        color: "#9CA3AF",
+                        fontFamily: "var(--font-mono)",
+                      }}
+                    >
+                      {u.byName} ·{" "}
+                      {new Date(u.timestamp).toLocaleString("en-IN")}
                     </p>
-                    <p className="text-sm" style={{ color: "#374151" }}>{u.message}</p>
+                    <p className="text-sm" style={{ color: "#374151" }}>
+                      {u.message}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -459,7 +630,10 @@ function StaffUpdateModal({
           {/* Update form */}
           <div
             className="rounded-lg p-4 space-y-3"
-            style={{ backgroundColor: "#F4F5F7", border: "1px solid var(--border)" }}
+            style={{
+              backgroundColor: "#F4F5F7",
+              border: "1px solid var(--border)",
+            }}
           >
             <p
               className="text-xs font-semibold uppercase tracking-wider"
@@ -468,16 +642,31 @@ function StaffUpdateModal({
               Add Progress Update
             </p>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: "#374151" }}>
+              <label
+                className="block text-xs font-medium mb-1.5"
+                style={{ color: "#374151" }}
+              >
                 Update Status
               </label>
               <select
                 value={newStatus}
-                onChange={(e) => setNewStatus(e.target.value as ComplaintStatus)}
+                onChange={(e) =>
+                  setNewStatus(e.target.value as ComplaintStatus)
+                }
                 className="w-full px-3 py-2 rounded text-sm border outline-none"
-                style={{ borderColor: "var(--border)", backgroundColor: "#fff" }}
+                style={{
+                  borderColor: "var(--border)",
+                  backgroundColor: "#fff",
+                }}
               >
-                {(["pending", "in_progress", "resolved", "rejected"] as ComplaintStatus[]).map((s) => (
+                {(
+                  [
+                    "pending",
+                    "in_progress",
+                    "resolved",
+                    "rejected",
+                  ] as ComplaintStatus[]
+                ).map((s) => (
                   <option key={s} value={s}>
                     {STATUS_LABELS[s]}
                   </option>
@@ -485,7 +674,10 @@ function StaffUpdateModal({
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: "#374151" }}>
+              <label
+                className="block text-xs font-medium mb-1.5"
+                style={{ color: "#374151" }}
+              >
                 Update Message
               </label>
               <textarea
@@ -494,14 +686,21 @@ function StaffUpdateModal({
                 rows={3}
                 placeholder="Describe progress, findings, or resolution…"
                 className="w-full px-3 py-2 rounded text-sm border outline-none"
-                style={{ borderColor: "var(--border)", backgroundColor: "#fff", resize: "vertical" }}
+                style={{
+                  borderColor: "var(--border)",
+                  backgroundColor: "#fff",
+                  resize: "vertical",
+                }}
               />
             </div>
             <button
               onClick={handleSave}
               disabled={!updateMsg.trim() || saving}
               className="px-4 py-2 rounded text-sm font-semibold text-white disabled:opacity-50 transition-opacity hover:opacity-90"
-              style={{ backgroundColor: "#0E7C7B", fontFamily: "var(--font-display)" }}
+              style={{
+                backgroundColor: "#0E7C7B",
+                fontFamily: "var(--font-display)",
+              }}
             >
               {saving ? "Saving…" : "Save Update"}
             </button>
