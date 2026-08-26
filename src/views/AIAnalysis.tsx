@@ -385,7 +385,7 @@ export default function AIAnalysis({ complaints }: Props) {
     <div className="space-y-8 pb-8">
       {/* Header banner */}
       <div
-        className="rounded-xl px-6 py-5 flex items-center gap-4"
+        className="rounded-xl px-4 py-4 sm:px-6 sm:py-5 flex flex-wrap items-center gap-4"
         style={{
           background:
             "linear-gradient(135deg, #0F1B2D 0%, #1A3A5C 60%, #0D9488 100%)",
@@ -424,7 +424,7 @@ export default function AIAnalysis({ complaints }: Props) {
             Updated just now
           </p>
         </div>
-        <div className="flex gap-3 shrink-0">
+        <div className="flex w-full gap-2 sm:w-auto sm:gap-3">
           {[
             {
               label: "Resolution",
@@ -440,7 +440,7 @@ export default function AIAnalysis({ complaints }: Props) {
           ].map((kpi) => (
             <div
               key={kpi.label}
-              className="px-4 py-2.5 rounded-lg text-center"
+              className="min-w-0 flex-1 px-2 py-2.5 rounded-lg text-center sm:px-4"
               style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
             >
               <p

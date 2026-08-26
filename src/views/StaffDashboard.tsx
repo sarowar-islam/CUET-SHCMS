@@ -49,6 +49,7 @@ interface Props {
 
 export default function StaffDashboard({ user, onLogout }: Props) {
   const [tab, setTab] = useState<Tab>("dashboard");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [complaints, setComplaints] = useState<Complaint[]>(COMPLAINTS);
   const [filterCategory, setFilterCategory] = useState<ComplaintCategory | "">("");
   const [filterStatus, setFilterStatus] = useState<ComplaintStatus | "">("");
@@ -87,22 +88,33 @@ export default function StaffDashboard({ user, onLogout }: Props) {
         onTabChange={(t) => setTab(t as Tab)}
         navItems={NAV_ITEMS}
         onLogout={onLogout}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
       />
 
-      <main className="flex-1 flex flex-col overflow-y-auto">
+      <main className="min-w-0 flex-1 flex flex-col overflow-y-auto">
         {/* Header */}
         <header
-          className="sticky top-0 z-10 flex items-center justify-between px-8 py-4 border-b"
+          className="sticky top-0 z-10 flex items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4 lg:px-8 border-b"
           style={{ backgroundColor: "#fff", borderColor: "var(--border)" }}
         >
           <div>
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="mb-2 inline-flex items-center justify-center rounded p-1.5 text-slate-600 hover:bg-slate-100 md:hidden"
+              aria-label="Open navigation"
+            >
+              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
             <h1
               className="text-lg font-semibold"
               style={{ fontFamily: "var(--font-display)", color: "#111827" }}
             >
               {tab === "dashboard" ? "All Complaints" : "My Assignments"}
             </h1>
-            <p className="text-xs" style={{ color: "#6B7280" }}>
+            <p className="text-xs hidden sm:block" style={{ color: "#6B7280" }}>
               {user.name} · {user.department}
             </p>
           </div>
@@ -119,9 +131,9 @@ export default function StaffDashboard({ user, onLogout }: Props) {
           </div>
         </header>
 
-        <div className="flex-1 p-8 space-y-6">
+        <div className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6">
           {/* Stats */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {[
               { label: "Total", value: stats.all, color: "#1A3A5C" },
               { label: "Assigned to me", value: stats.assigned, color: "#0E7C7B" },
@@ -213,10 +225,10 @@ export default function StaffDashboard({ user, onLogout }: Props) {
 
           {/* Table */}
           <div
-            className="rounded-lg overflow-hidden"
+            className="rounded-lg overflow-x-auto"
             style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}
           >
-            <table className="w-full text-sm">
+            <table className="min-w-[760px] w-full text-sm">
               <thead>
                 <tr style={{ backgroundColor: "#F4F5F7", borderBottom: "1px solid var(--border)" }}>
                   {["ID", "Student / Room", "Title", "Category", "Urgency", "Status", "Date", "Actions"].map((h) => (
@@ -409,7 +421,7 @@ function StaffUpdateModal({
             <UrgencyBadge urgency={c.urgency} />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
             <div>
               <p className="text-xs font-medium mb-1" style={{ color: "#9CA3AF" }}>Student</p>
               <p style={{ color: "#111827" }}>{c.studentName}</p>

@@ -84,6 +84,7 @@ interface Props {
 
 export default function AdminConsole({ user, onLogout }: Props) {
   const [tab, setTab] = useState<Tab>("overview");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [complaints, setComplaints] = useState<Complaint[]>(COMPLAINTS);
   const [users, setUsers] = useState<User[]>(USERS);
   const [config, setConfig] = useState<SystemConfig>(SYSTEM_CONFIG);
@@ -157,21 +158,32 @@ export default function AdminConsole({ user, onLogout }: Props) {
         onTabChange={(t) => setTab(t as Tab)}
         navItems={NAV_ITEMS}
         onLogout={onLogout}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
       />
 
-      <main className="flex-1 flex flex-col overflow-y-auto">
+      <main className="min-w-0 flex-1 flex flex-col overflow-y-auto">
         <header
-          className="sticky top-0 z-10 flex items-center justify-between px-8 py-4 border-b"
+          className="sticky top-0 z-10 flex items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4 lg:px-8 border-b"
           style={{ backgroundColor: "#fff", borderColor: "var(--border)" }}
         >
           <div>
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="mb-2 inline-flex items-center justify-center rounded p-1.5 text-slate-600 hover:bg-slate-100 md:hidden"
+              aria-label="Open navigation"
+            >
+              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
             <h1
               className="text-lg font-semibold"
               style={{ fontFamily: "var(--font-display)", color: "#111827" }}
             >
               {NAV_ITEMS.find((n) => n.id === tab)?.label ?? "Admin Console"}
             </h1>
-            <p className="text-xs" style={{ color: "#6B7280" }}>
+            <p className="text-xs hidden sm:block" style={{ color: "#6B7280" }}>
               {user.name} · {config.hallName}
             </p>
           </div>
@@ -188,11 +200,11 @@ export default function AdminConsole({ user, onLogout }: Props) {
           </div>
         </header>
 
-        <div className="flex-1 p-8 space-y-6">
+        <div className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6">
           {/* ===== OVERVIEW ===== */}
           {tab === "overview" && (
             <>
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {overviewStats.map((s) => (
                   <div
                     key={s.label}
@@ -252,7 +264,7 @@ export default function AdminConsole({ user, onLogout }: Props) {
 
               {/* Recent complaints */}
               <div
-                className="rounded-lg overflow-hidden"
+                className="rounded-lg overflow-x-auto"
                 style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}
               >
                 <div
@@ -266,7 +278,7 @@ export default function AdminConsole({ user, onLogout }: Props) {
                     Recent Complaints
                   </h3>
                 </div>
-                <table className="w-full text-sm">
+                <table className="min-w-[720px] w-full text-sm">
                   <thead>
                     <tr style={{ backgroundColor: "#F4F5F7" }}>
                       {["ID", "Student", "Title", "Category", "Status", "Date"].map((h) => (
@@ -331,8 +343,8 @@ export default function AdminConsole({ user, onLogout }: Props) {
                 </span>
               </div>
 
-              <div className="rounded-lg overflow-hidden" style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}>
-                <table className="w-full text-sm">
+              <div className="rounded-lg overflow-x-auto" style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}>
+                <table className="min-w-[720px] w-full text-sm">
                   <thead>
                     <tr style={{ backgroundColor: "#F4F5F7" }}>
                       {["ID", "Student / Room", "Title", "Category", "Urgency", "Status", "Assigned To", "Date"].map((h) => (
@@ -366,13 +378,13 @@ export default function AdminConsole({ user, onLogout }: Props) {
 
           {/* ===== STUDENTS ===== */}
           {tab === "students" && (
-            <div className="rounded-lg overflow-hidden" style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}>
+            <div className="rounded-lg overflow-x-auto" style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}>
               <div className="px-5 py-3 border-b" style={{ borderColor: "var(--border)" }}>
                 <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#111827" }}>
                   Registered Students ({students.length})
                 </h3>
               </div>
-              <table className="w-full text-sm">
+              <table className="min-w-[720px] w-full text-sm">
                 <thead>
                   <tr style={{ backgroundColor: "#F4F5F7" }}>
                     {["Student ID", "Name", "Email", "Room", "Phone", "Joined", "Status", "Action"].map((h) => (
@@ -421,13 +433,13 @@ export default function AdminConsole({ user, onLogout }: Props) {
 
           {/* ===== STAFF ===== */}
           {tab === "staff" && (
-            <div className="rounded-lg overflow-hidden" style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}>
+            <div className="rounded-lg overflow-x-auto" style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}>
               <div className="px-5 py-3 border-b" style={{ borderColor: "var(--border)" }}>
                 <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#111827" }}>
                   Hall Staff ({staffList.length})
                 </h3>
               </div>
-              <table className="w-full text-sm">
+              <table className="min-w-[720px] w-full text-sm">
                 <thead>
                   <tr style={{ backgroundColor: "#F4F5F7" }}>
                     {["Staff ID", "Name", "Department", "Email", "Phone", "Joined", "Assigned", "Action"].map((h) => (
@@ -617,7 +629,7 @@ function AdminComplaintModal({
             <UrgencyBadge urgency={c.urgency} />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
             <div>
               <p className="text-xs font-medium mb-1" style={{ color: "#9CA3AF" }}>Student</p>
               <p style={{ color: "#111827" }}>{c.studentName}</p>
@@ -658,7 +670,7 @@ function AdminComplaintModal({
           {/* Admin controls */}
           <div className="rounded-lg p-4 space-y-4" style={{ backgroundColor: "#F4F5F7", border: "1px solid var(--border)" }}>
             <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#374151", fontFamily: "var(--font-display)" }}>Admin Controls</p>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium mb-1.5" style={{ color: "#374151" }}>Assign to Staff</label>
                 <select value={assignTo} onChange={(e) => setAssignTo(e.target.value)} className="w-full px-3 py-2 rounded text-sm border outline-none" style={{ borderColor: "var(--border)", backgroundColor: "#fff" }}>

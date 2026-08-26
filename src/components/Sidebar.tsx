@@ -12,6 +12,8 @@ interface SidebarProps {
   onTabChange: (tab: string) => void;
   navItems: NavItem[];
   onLogout: () => void;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
 export default function Sidebar({
@@ -20,6 +22,8 @@ export default function Sidebar({
   onTabChange,
   navItems,
   onLogout,
+  isOpen = false,
+  onClose,
 }: SidebarProps) {
   const roleColor =
     user.role === "admin"
@@ -36,13 +40,23 @@ export default function Sidebar({
         : "Student";
 
   return (
-    <aside
-      className="flex flex-col w-60 min-h-screen shrink-0"
+    <>
+      <div
+        aria-hidden="true"
+        onClick={onClose}
+        className={`fixed inset-0 z-30 bg-slate-950/45 transition-opacity md:hidden ${
+          isOpen ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      />
+      <aside
+      className={`fixed inset-y-0 left-0 z-40 flex w-60 flex-col min-h-screen shrink-0 transition-transform duration-200 md:translate-x-0 md:max-lg:w-20 lg:static lg:translate-x-0 ${
+        isOpen ? "translate-x-0" : "-translate-x-full"
+      }`}
       style={{ backgroundColor: "#0F1B2D", color: "#E5EAF2" }}
     >
       {/* Hall branding */}
       <div
-        className="px-5 py-5 border-b"
+        className="px-5 py-5 border-b md:max-lg:px-3"
         style={{ borderColor: "rgba(255,255,255,0.08)" }}
       >
         <div className="flex items-center gap-2.5 mb-1">
@@ -56,20 +70,20 @@ export default function Sidebar({
             KH
           </div>
           <span
-            className="text-sm font-semibold leading-tight"
+            className="text-sm font-semibold leading-tight md:max-lg:hidden"
             style={{ fontFamily: "var(--font-display)", color: "#E5EAF2" }}
           >
             Kabi Kazi Nazrul Islam Hall
           </span>
         </div>
-        <p className="text-xs" style={{ color: "#6B8099", marginLeft: "35px" }}>
+        <p className="text-xs md:max-lg:hidden" style={{ color: "#6B8099", marginLeft: "35px" }}>
           Complaint Portal
         </p>
       </div>
 
       {/* User card */}
       <div
-        className="px-4 py-4 border-b"
+        className="px-4 py-4 border-b md:max-lg:px-3"
         style={{ borderColor: "rgba(255,255,255,0.08)" }}
       >
         <div className="flex items-center gap-3">
@@ -83,7 +97,7 @@ export default function Sidebar({
               .join("")
               .slice(0, 2)}
           </div>
-          <div className="min-w-0">
+          <div className="min-w-0 md:max-lg:hidden">
             <p
               className="text-sm font-semibold truncate"
               style={{ fontFamily: "var(--font-display)", color: "#E5EAF2" }}
@@ -101,14 +115,18 @@ export default function Sidebar({
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto md:max-lg:px-2">
         {navItems.map((item) => {
           const isActive = activeTab === item.id;
           return (
             <button
               key={item.id}
-              onClick={() => onTabChange(item.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded text-sm transition-colors text-left ${
+              onClick={() => {
+                onTabChange(item.id);
+                onClose?.();
+              }}
+              title={item.label}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded text-sm transition-colors text-left md:max-lg:justify-center md:max-lg:px-2 ${
                 isActive ? "text-white" : "hover:bg-white/5"
               }`}
               style={{
@@ -120,17 +138,18 @@ export default function Sidebar({
               <span className="shrink-0 w-4 h-4 flex items-center justify-center">
                 {item.icon}
               </span>
-              <span>{item.label}</span>
+              <span className="md:max-lg:hidden">{item.label}</span>
             </button>
           );
         })}
       </nav>
 
       {/* Logout */}
-      <div className="px-3 pb-5">
+      <div className="px-3 pb-5 md:max-lg:px-2">
         <button
           onClick={onLogout}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded text-sm transition-colors hover:bg-white/5"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded text-sm transition-colors hover:bg-white/5 md:max-lg:justify-center md:max-lg:px-2"
+          title="Sign out"
           style={{ color: "#6B8099" }}
         >
           <svg
@@ -147,6 +166,7 @@ export default function Sidebar({
           Sign out
         </button>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }

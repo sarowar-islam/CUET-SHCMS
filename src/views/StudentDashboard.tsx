@@ -80,6 +80,7 @@ interface Props {
 
 export default function StudentDashboard({ user, onLogout }: Props) {
   const [tab, setTab] = useState<Tab>("dashboard");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showChatbot, setShowChatbot] = useState(false);
   const [complaints, setComplaints] = useState<Complaint[]>(COMPLAINTS);
 
@@ -174,15 +175,26 @@ export default function StudentDashboard({ user, onLogout }: Props) {
         onTabChange={(t) => setTab(t as Tab)}
         navItems={NAV_ITEMS}
         onLogout={onLogout}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
       />
 
-      <main className="flex-1 flex flex-col min-h-screen overflow-y-auto">
+      <main className="min-w-0 flex-1 flex flex-col min-h-screen overflow-y-auto">
         {/* Topbar */}
         <header
-          className="sticky top-0 z-10 flex items-center justify-between px-8 py-4 border-b"
+          className="sticky top-0 z-10 flex items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4 lg:px-8 border-b"
           style={{ backgroundColor: "#fff", borderColor: "var(--border)" }}
         >
           <div>
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="mb-2 inline-flex items-center justify-center rounded p-1.5 text-slate-600 hover:bg-slate-100 md:hidden"
+              aria-label="Open navigation"
+            >
+              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
             <h1
               className="text-lg font-semibold"
               style={{ fontFamily: "var(--font-display)", color: "#111827" }}
@@ -191,7 +203,7 @@ export default function StudentDashboard({ user, onLogout }: Props) {
               {tab === "submit" && "New Complaint"}
               {tab === "my_complaints" && "My Complaints"}
             </h1>
-            <p className="text-xs" style={{ color: "#6B7280" }}>
+            <p className="text-xs hidden sm:block" style={{ color: "#6B7280" }}>
               {user.name} · Room {user.room}
             </p>
           </div>
@@ -203,16 +215,16 @@ export default function StudentDashboard({ user, onLogout }: Props) {
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
-            AI Assistant
+            <span className="hidden sm:inline">AI Assistant</span>
           </button>
         </header>
 
-        <div className="flex-1 p-8">
+        <div className="flex-1 p-4 sm:p-6 lg:p-8">
           {/* === DASHBOARD === */}
           {tab === "dashboard" && (
             <div className="space-y-6">
               {/* Stat row */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 {[
                   { label: "Total", value: stats.total, color: "#1A3A5C" },
                   { label: "Pending", value: stats.pending, color: "#D97706" },
@@ -335,7 +347,7 @@ export default function StudentDashboard({ user, onLogout }: Props) {
           {tab === "submit" && (
             <div className="max-w-2xl">
               <div
-                className="rounded-lg p-8"
+                className="rounded-lg p-4 sm:p-6 lg:p-8"
                 style={{ backgroundColor: "#fff", border: "1px solid var(--border)" }}
               >
                 <div className="flex items-center justify-between mb-6">
@@ -373,7 +385,7 @@ export default function StudentDashboard({ user, onLogout }: Props) {
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                   {/* Auto-populated */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <ReadonlyField label="Student Name" value={user.name} />
                     <ReadonlyField label="Student ID" value={user.id} mono />
                   </div>
@@ -390,7 +402,7 @@ export default function StudentDashboard({ user, onLogout }: Props) {
                     />
                   </FormField>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <FormField label="Room Number" required>
                       <input
                         type="text"
@@ -631,7 +643,7 @@ function ComplaintDetailModal({ complaint: c, onClose }: { complaint: Complaint;
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
             <div>
               <p className="text-xs font-medium mb-1" style={{ color: "#9CA3AF" }}>Room</p>
               <p style={{ fontFamily: "var(--font-mono)", color: "#111827" }}>{c.room}</p>

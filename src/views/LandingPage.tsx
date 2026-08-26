@@ -292,13 +292,16 @@ export default function LandingPage({ onSignIn }: Props) {
             <div>
               <p
                 className="text-sm font-semibold leading-none"
-                style={{ fontFamily: "var(--font-display)", color: "#111827" }}
+                style={{
+                  fontFamily: "var(--font-display)",
+                  color: scrolled ? "#111827" : "#F1F5F9",
+                }}
               >
                 Kabi Kazi Nazrul Islam Hall
               </p>
               <p
                 className="text-xs leading-none mt-0.5"
-                style={{ color: "#9CA3AF" }}
+                style={{ color: scrolled ? "#6B7280" : "#A8B8CC" }}
               >
                 Complaint Portal
               </p>
@@ -310,7 +313,10 @@ export default function LandingPage({ onSignIn }: Props) {
                 key={label}
                 href={`#${label.toLowerCase().replace(/ /g, "-")}`}
                 className="text-sm transition-colors hover:text-teal-600"
-                style={{ color: "#6B7280", fontFamily: "var(--font-body)" }}
+                style={{
+                  color: scrolled ? "#4B5563" : "#C4D0DE",
+                  fontFamily: "var(--font-body)",
+                }}
               >
                 {label}
               </a>
