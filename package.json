@@ -1,10 +1,10 @@
 {
-  "name": "figma-make-app",
+  "name": "cuet-shcms-frontend",
   "private": true,
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
+    "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "format": "oxfmt"
@@ -12,7 +12,8 @@
   "dependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "recharts": "^3.10.1"
+    "recharts": "^3.10.1",
+    "axios": "^1.7.7"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.0",
