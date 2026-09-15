@@ -1,6 +1,5 @@
 import api from "../utils/api";
-import type { LoginRequest, LoginResponse, User, Complaint, SystemConfig } from "../types";
-import type { Role } from "../types";
+import type { LoginRequest, LoginResponse, User, Complaint, SystemConfig, ManagedUser, Role } from "../types";
 
 // Auth Service
 export const authService = {
@@ -62,6 +61,20 @@ export const authService = {
       };
     }
     return null;
+  },
+};
+
+export type ManagedUserInput = Omit<ManagedUser, "joinedDate"> & { password?: string };
+
+export const userService = {
+  getAll: async (): Promise<ManagedUser[]> => (await api.get<ManagedUser[]>("/users")).data,
+  create: async (user: ManagedUserInput): Promise<ManagedUser> => (await api.post<ManagedUser>("/users", user)).data,
+  update: async (userId: string, user: Partial<ManagedUserInput>): Promise<ManagedUser> =>
+    (await api.put<ManagedUser>(`/users/${encodeURIComponent(userId)}`, user)).data,
+  setActive: async (userId: string, active: boolean): Promise<ManagedUser> =>
+    (await api.patch<ManagedUser>(`/users/${encodeURIComponent(userId)}/status`, { active })).data,
+  remove: async (userId: string): Promise<void> => {
+    await api.delete(`/users/${encodeURIComponent(userId)}`);
   },
 };
 

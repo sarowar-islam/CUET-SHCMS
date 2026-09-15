@@ -15,6 +15,19 @@ export interface User {
   active: boolean;
 }
 
+export interface ManagedUser {
+  userId: string;
+  username: string;
+  role: Role;
+  name: string;
+  email: string;
+  room?: string;
+  department?: string;
+  phone?: string;
+  active: boolean;
+  joinedDate?: string;
+}
+
 export interface LoginRequest {
   username: string;
   password: string;

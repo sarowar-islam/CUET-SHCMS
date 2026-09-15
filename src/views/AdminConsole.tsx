@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import type {
   User,
   Complaint,
@@ -9,13 +9,13 @@ import type {
 import AIAnalysis from "./AIAnalysis";
 import {
   COMPLAINTS,
-  USERS,
   CATEGORY_LABELS,
   STATUS_LABELS,
   SYSTEM_CONFIG,
 } from "../dummy";
 import Sidebar from "../components/Sidebar";
 import { StatusBadge, UrgencyBadge } from "../components/StatusBadge";
+import { userService, type ManagedUserInput } from "../services/api";
 
 type Tab =
   | "overview"
@@ -24,6 +24,33 @@ type Tab =
   | "staff"
   | "settings"
   | "analysis";
+
+function toDashboardUser(user: {
+  userId: string;
+  username: string;
+  role: string;
+  name: string;
+  email: string;
+  room?: string;
+  department?: string;
+  phone?: string;
+  active: boolean;
+  joinedDate?: string;
+}): User {
+  return {
+    id: user.userId,
+    username: user.username,
+    password: "",
+    role: user.role.toLowerCase() as User["role"],
+    name: user.name,
+    email: user.email,
+    room: user.room,
+    department: user.department,
+    phone: user.phone,
+    joinedDate: user.joinedDate ?? "",
+    active: user.active,
+  };
+}
 
 const NAV_ITEMS = [
   {
@@ -134,7 +161,11 @@ export default function AdminConsole({ user, onLogout }: Props) {
   const [tab, setTab] = useState<Tab>("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [complaints, setComplaints] = useState<Complaint[]>(COMPLAINTS);
-  const [users, setUsers] = useState<User[]>(USERS);
+  const [users, setUsers] = useState<User[]>([]);
+  const [userLoading, setUserLoading] = useState(true);
+  const [userError, setUserError] = useState("");
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [userFormOpen, setUserFormOpen] = useState(false);
   const [config, setConfig] = useState<SystemConfig>(SYSTEM_CONFIG);
   const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(
     null,
@@ -144,6 +175,13 @@ export default function AdminConsole({ user, onLogout }: Props) {
   );
   const [filterStatus, setFilterStatus] = useState<ComplaintStatus | "">("");
   const [configSaved, setConfigSaved] = useState(false);
+
+  useEffect(() => {
+    userService.getAll()
+      .then((loadedUsers) => setUsers(loadedUsers.map(toDashboardUser)))
+      .catch(() => setUserError("Unable to load users. Please try again."))
+      .finally(() => setUserLoading(false));
+  }, []);
 
   const students = users.filter((u) => u.role === "student");
   const staffList = users.filter((u) => u.role === "staff");
@@ -170,10 +208,41 @@ export default function AdminConsole({ user, onLogout }: Props) {
     return map;
   }, [complaints]);
 
-  const handleToggleUser = (id: string) => {
-    setUsers((prev) =>
-      prev.map((u) => (u.id === id ? { ...u, active: !u.active } : u)),
-    );
+  const handleToggleUser = async (user: User) => {
+    try {
+      const updated = await userService.setActive(user.id, !user.active);
+      setUsers((prev) => prev.map((item) => item.id === user.id ? toDashboardUser(updated) : item));
+    } catch {
+      setUserError("Unable to update this account.");
+    }
+  };
+
+  const handleDeleteUser = async (user: User) => {
+    if (!window.confirm(`Delete ${user.name}'s account? This cannot be undone.`)) return;
+    try {
+      await userService.remove(user.id);
+      setUsers((prev) => prev.filter((item) => item.id !== user.id));
+    } catch {
+      setUserError("Unable to delete this account.");
+    }
+  };
+
+  const handleSaveUser = async (form: ManagedUserInput) => {
+    try {
+      const saved = editingUser
+        ? await userService.update(editingUser.id, form)
+        : await userService.create(form);
+      setUsers((prev) => editingUser
+        ? prev.map((item) => item.id === editingUser.id ? toDashboardUser(saved) : item)
+        : [...prev, toDashboardUser(saved)]);
+      setUserFormOpen(false);
+      setEditingUser(null);
+      setUserError("");
+    } catch (error) {
+      const message = error as { response?: { data?: { error?: string } } };
+      setUserError(message.response?.data?.error ?? "Unable to save this account.");
+      throw error;
+    }
   };
 
   const handleAssign = (complaintId: string, staffId: string) => {
@@ -284,9 +353,30 @@ export default function AdminConsole({ user, onLogout }: Props) {
           >
             Admin Console
           </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => { setTab("students"); setEditingUser(null); setUserFormOpen(true); }}
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded text-xs font-semibold text-white"
+              style={{ backgroundColor: "#0E7C7B" }}
+            >
+              <span aria-hidden="true">+</span><span className="hidden sm:inline">Add Student</span><span className="sm:hidden">Student</span>
+            </button>
+            <button
+              onClick={() => { setTab("staff"); setEditingUser(null); setUserFormOpen(true); }}
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded text-xs font-semibold"
+              style={{ backgroundColor: "#E8EDF4", color: "#1A3A5C" }}
+            >
+              <span aria-hidden="true">+</span><span className="hidden sm:inline">Add Staff</span><span className="sm:hidden">Staff</span>
+            </button>
+          </div>
         </header>
 
         <div className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6">
+          {userError && (
+            <div className="px-4 py-3 rounded-lg text-sm" style={{ backgroundColor: "#FEF2F2", border: "1px solid #FECACA", color: "#B91C1C" }}>
+              {userError}
+            </div>
+          )}
           {/* ===== OVERVIEW ===== */}
           {tab === "overview" && (
             <>
@@ -723,7 +813,7 @@ export default function AdminConsole({ user, onLogout }: Props) {
               }}
             >
               <div
-                className="px-5 py-3 border-b"
+                className="px-5 py-3 border-b flex items-center justify-between gap-3"
                 style={{ borderColor: "var(--border)" }}
               >
                 <h3
@@ -735,6 +825,13 @@ export default function AdminConsole({ user, onLogout }: Props) {
                 >
                   Registered Students ({students.length})
                 </h3>
+                <button
+                  onClick={() => { setEditingUser(null); setUserFormOpen(true); }}
+                  className="px-3 py-1.5 rounded text-xs font-semibold text-white"
+                  style={{ backgroundColor: "#0E7C7B" }}
+                >
+                  + Add Student
+                </button>
               </div>
               <table className="min-w-[720px] w-full text-sm">
                 <thead>
@@ -831,7 +928,7 @@ export default function AdminConsole({ user, onLogout }: Props) {
                       </td>
                       <td className="px-4 py-3">
                         <button
-                          onClick={() => handleToggleUser(s.id)}
+                          onClick={() => handleToggleUser(s)}
                           className="text-xs px-3 py-1 rounded border transition-colors hover:bg-gray-100"
                           style={{
                             borderColor: "var(--border)",
@@ -839,6 +936,20 @@ export default function AdminConsole({ user, onLogout }: Props) {
                           }}
                         >
                           {s.active ? "Deactivate" : "Activate"}
+                        </button>
+                        <button
+                          onClick={() => { setEditingUser(s); setUserFormOpen(true); }}
+                          className="ml-2 text-xs px-3 py-1 rounded border"
+                          style={{ borderColor: "var(--border)", color: "#1A3A5C" }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteUser(s)}
+                          className="ml-2 text-xs px-3 py-1 rounded border"
+                          style={{ borderColor: "#FECACA", color: "#B91C1C" }}
+                        >
+                          Delete
                         </button>
                       </td>
                     </tr>
@@ -858,7 +969,7 @@ export default function AdminConsole({ user, onLogout }: Props) {
               }}
             >
               <div
-                className="px-5 py-3 border-b"
+                className="px-5 py-3 border-b flex items-center justify-between gap-3"
                 style={{ borderColor: "var(--border)" }}
               >
                 <h3
@@ -870,6 +981,13 @@ export default function AdminConsole({ user, onLogout }: Props) {
                 >
                   Hall Staff ({staffList.length})
                 </h3>
+                <button
+                  onClick={() => { setEditingUser(null); setUserFormOpen(true); }}
+                  className="px-3 py-1.5 rounded text-xs font-semibold text-white"
+                  style={{ backgroundColor: "#0E7C7B" }}
+                >
+                  + Add Staff
+                </button>
               </div>
               <table className="min-w-[720px] w-full text-sm">
                 <thead>
@@ -967,7 +1085,7 @@ export default function AdminConsole({ user, onLogout }: Props) {
                         </td>
                         <td className="px-4 py-3">
                           <button
-                            onClick={() => handleToggleUser(s.id)}
+                            onClick={() => handleToggleUser(s)}
                             className="text-xs px-3 py-1 rounded border transition-colors hover:bg-gray-100"
                             style={{
                               borderColor: "var(--border)",
@@ -975,6 +1093,20 @@ export default function AdminConsole({ user, onLogout }: Props) {
                             }}
                           >
                             {s.active ? "Deactivate" : "Activate"}
+                          </button>
+                          <button
+                            onClick={() => { setEditingUser(s); setUserFormOpen(true); }}
+                            className="ml-2 text-xs px-3 py-1 rounded border"
+                            style={{ borderColor: "var(--border)", color: "#1A3A5C" }}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteUser(s)}
+                            className="ml-2 text-xs px-3 py-1 rounded border"
+                            style={{ borderColor: "#FECACA", color: "#B91C1C" }}
+                          >
+                            Delete
                           </button>
                         </td>
                       </tr>
@@ -1213,7 +1345,102 @@ export default function AdminConsole({ user, onLogout }: Props) {
           }}
         />
       )}
+      {userFormOpen && (
+        <UserFormModal
+          user={editingUser}
+          defaultRole={tab === "staff" ? "staff" : "student"}
+          onClose={() => { setUserFormOpen(false); setEditingUser(null); }}
+          onSave={handleSaveUser}
+        />
+      )}
     </div>
+  );
+}
+
+function UserFormModal({
+  user,
+  defaultRole,
+  onClose,
+  onSave,
+}: {
+  user: User | null;
+  defaultRole: "student" | "staff";
+  onClose: () => void;
+  onSave: (form: ManagedUserInput) => Promise<void>;
+}) {
+  const [form, setForm] = useState<ManagedUserInput>({
+    userId: user?.id ?? "",
+    username: user?.username ?? "",
+    password: "",
+    role: user?.role === "staff" ? "staff" : defaultRole,
+    name: user?.name ?? "",
+    email: user?.email ?? "",
+    room: user?.room ?? "",
+    department: user?.department ?? "",
+    phone: user?.phone ?? "",
+    active: user?.active ?? true,
+  });
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  const update = (key: keyof ManagedUserInput, value: string | boolean) =>
+    setForm((current) => ({ ...current, [key]: value }));
+
+  const submit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setSaving(true);
+    setError("");
+    try {
+      await onSave({ ...form, role: form.role as "student" | "staff" | "admin" });
+    } catch {
+      setError("Please check the details and try again.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: "rgba(0,0,0,0.5)" }} onClick={onClose}>
+      <form className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-xl p-6 space-y-4" style={{ backgroundColor: "#fff" }} onClick={(event) => event.stopPropagation()} onSubmit={submit}>
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold" style={{ color: "#111827", fontFamily: "var(--font-display)" }}>
+            {user ? "Edit account" : `Add ${defaultRole}`}
+          </h2>
+          <button type="button" onClick={onClose} className="text-xl" style={{ color: "#6B7280" }} aria-label="Close">×</button>
+        </div>
+        {error && <p className="px-3 py-2 rounded text-sm" style={{ backgroundColor: "#FEF2F2", color: "#B91C1C" }}>{error}</p>}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <Field label="User ID" value={form.userId} disabled={Boolean(user)} onChange={(value) => update("userId", value)} required />
+          <Field label="Username" value={form.username} onChange={(value) => update("username", value)} required />
+          <Field label="Full name" value={form.name} onChange={(value) => update("name", value)} required />
+          <Field label="Email" type="email" value={form.email} onChange={(value) => update("email", value)} required />
+          <Field label={user ? "New password (optional)" : "Password"} type="password" value={form.password ?? ""} onChange={(value) => update("password", value)} required={!user} />
+          <Field label="Phone" value={form.phone ?? ""} onChange={(value) => update("phone", value)} />
+          <Field label="Room" value={form.room ?? ""} onChange={(value) => update("room", value)} />
+          <Field label="Department" value={form.department ?? ""} onChange={(value) => update("department", value)} />
+        </div>
+        <div className="flex justify-end gap-2 pt-2">
+          <button type="button" onClick={onClose} className="px-4 py-2 rounded text-sm border" style={{ borderColor: "var(--border)", color: "#374151" }}>Cancel</button>
+          <button type="submit" disabled={saving} className="px-4 py-2 rounded text-sm font-semibold text-white disabled:opacity-60" style={{ backgroundColor: "#0E7C7B" }}>{saving ? "Saving..." : "Save account"}</button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function Field({ label, value, onChange, type = "text", disabled = false, required = false }: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  type?: string;
+  disabled?: boolean;
+  required?: boolean;
+}) {
+  return (
+    <label className="text-xs font-medium" style={{ color: "#374151" }}>
+      {label}
+      <input type={type} value={value} disabled={disabled} required={required} onChange={(event) => onChange(event.target.value)} className="mt-1 w-full px-3 py-2 rounded text-sm border outline-none disabled:bg-gray-100" style={{ borderColor: "var(--border)", color: "#111827" }} />
+    </label>
   );
 }
 

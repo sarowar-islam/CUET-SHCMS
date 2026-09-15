@@ -6,12 +6,16 @@ import AdminConsole from "./views/AdminConsole";
 import { authService } from "./services/api";
 import type { User } from "./dummy";
 import type { Role } from "./types";
+import LandingPage from "./views/LandingPage";
+import { Capacitor } from "@capacitor/core";
 
-type Screen = "login" | "app";
+type Screen = "landing" | "login" | "app";
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
-  const [screen, setScreen] = useState<Screen>("login");
+  const [screen, setScreen] = useState<Screen>(
+    Capacitor.isNativePlatform() ? "login" : "landing",
+  );
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
@@ -29,7 +33,7 @@ export default function App() {
     await authService.logout();
     authService.clearAuth();
     setUser(null);
-    setScreen("login");
+    setScreen(Capacitor.isNativePlatform() ? "login" : "landing");
   };
 
   const handleLogin = (userData: {
@@ -63,12 +67,26 @@ export default function App() {
     );
   }
 
+  if (screen === "landing") {
+    return <LandingPage onSignIn={() => setScreen("login")} />;
+  }
+
   if (screen === "login") {
-    return <Login onLogin={handleLogin} />;
+    return (
+      <Login
+        onLogin={handleLogin}
+        onBack={Capacitor.isNativePlatform() ? undefined : () => setScreen("landing")}
+      />
+    );
   }
 
   if (!user) {
-    return <Login onLogin={handleLogin} />;
+    return (
+      <Login
+        onLogin={handleLogin}
+        onBack={Capacitor.isNativePlatform() ? undefined : () => setScreen("landing")}
+      />
+    );
   }
 
   if (user.role === "student") return <StudentDashboard user={user} onLogout={handleLogout} />;
