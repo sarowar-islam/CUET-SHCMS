@@ -63,15 +63,11 @@ export default function Login({ onLogin, onBack }: LoginProps) {
       >
         <div>
           <div className="flex items-center gap-3 mb-12">
-            <div
-              className="w-9 h-9 rounded flex items-center justify-center text-white text-sm font-bold"
-              style={{
-                backgroundColor: "#0E7C7B",
-                fontFamily: "var(--font-display)",
-              }}
-            >
-              KH
-            </div>
+            <img
+              src="/images/logo.png"
+              alt="CUET Smart Hall logo"
+              className="w-11 h-11 rounded object-cover shrink-0"
+            />
             <div>
               <p
                 className="font-semibold text-sm"
@@ -145,6 +141,11 @@ export default function Login({ onLogin, onBack }: LoginProps) {
       {/* Right panel — login form */}
       <div className="flex-1 flex items-center justify-center px-6">
         <div className="w-full max-w-sm">
+          <img
+            src="/images/logo.png"
+            alt="CUET Smart Hall logo"
+            className="w-20 h-20 rounded-lg object-cover mx-auto mb-6 lg:hidden"
+          />
           {onBack && (
             <button
               onClick={onBack}

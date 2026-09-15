@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">CUET SHCMS</string>
+    <string name="title_activity_main">CUET SHCMS</string>
+    <string name="package_name">com.cuet.shcms</string>
+    <string name="custom_url_scheme">com.cuet.shcms</string>
+</resources>

@@ -1,27 +1,17 @@
 import { useState, useEffect } from "react";
-import LandingPage from "./views/LandingPage";
 import Login from "./views/Login";
 import StudentDashboard from "./views/StudentDashboard";
 import StaffDashboard from "./views/StaffDashboard";
 import AdminConsole from "./views/AdminConsole";
 import { authService } from "./services/api";
+import type { User } from "./dummy";
 import type { Role } from "./types";
 
-type Screen = "landing" | "login" | "app";
+type Screen = "login" | "app";
 
 export default function App() {
-  const [user, setUser] = useState<{
-    userId: string;
-    username: string;
-    role: Role;
-    name: string;
-    email: string;
-    room?: string;
-    department?: string;
-    phone?: string;
-    active: boolean;
-  } | null>(null);
-  const [screen, setScreen] = useState<Screen>("landing");
+  const [user, setUser] = useState<User | null>(null);
+  const [screen, setScreen] = useState<Screen>("login");
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
@@ -29,7 +19,7 @@ export default function App() {
     const token = authService.getToken();
 
     if (storedUser && token) {
-      setUser(storedUser);
+      setUser({ ...storedUser, id: storedUser.userId, password: "", joinedDate: "" });
       setScreen("app");
     }
     setChecking(false);
@@ -39,7 +29,7 @@ export default function App() {
     await authService.logout();
     authService.clearAuth();
     setUser(null);
-    setScreen("landing");
+    setScreen("login");
   };
 
   const handleLogin = (userData: {
@@ -53,7 +43,7 @@ export default function App() {
     phone?: string;
     active: boolean;
   }) => {
-    setUser(userData);
+    setUser({ ...userData, id: userData.userId, password: "", joinedDate: "" });
     setScreen("app");
   };
 
@@ -73,17 +63,12 @@ export default function App() {
     );
   }
 
-  if (screen === "landing") {
-    return <LandingPage onSignIn={() => setScreen("login")} />;
-  }
-
   if (screen === "login") {
-    return <Login onLogin={handleLogin} onBack={() => setScreen("landing")} />;
+    return <Login onLogin={handleLogin} />;
   }
 
   if (!user) {
-    setScreen("landing");
-    return null;
+    return <Login onLogin={handleLogin} />;
   }
 
   if (user.role === "student") return <StudentDashboard user={user} onLogout={handleLogout} />;

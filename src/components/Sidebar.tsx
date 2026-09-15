@@ -60,15 +60,11 @@ export default function Sidebar({
           style={{ borderColor: "rgba(255,255,255,0.08)" }}
         >
           <div className="flex items-center gap-2.5 mb-1">
-            <div
-              className="w-7 h-7 rounded flex items-center justify-center shrink-0 text-white text-xs font-bold"
-              style={{
-                backgroundColor: "#0E7C7B",
-                fontFamily: "var(--font-display)",
-              }}
-            >
-              KH
-            </div>
+            <img
+              src="/images/logo.png"
+              alt="CUET Smart Hall logo"
+              className="w-8 h-8 rounded object-cover shrink-0"
+            />
             <span
               className="text-sm font-semibold leading-tight md:max-lg:hidden"
               style={{ fontFamily: "var(--font-display)", color: "#E5EAF2" }}
