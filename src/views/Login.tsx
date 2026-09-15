@@ -1,9 +1,19 @@
 import { useState } from "react";
-import { authenticate, setCookie } from "../dummy";
-import type { User } from "../dummy";
+import { authService } from "../services/api";
+import type { Role } from "../types";
 
 interface LoginProps {
-  onLogin: (user: User) => void;
+  onLogin: (user: {
+    userId: string;
+    username: string;
+    role: Role;
+    name: string;
+    email: string;
+    room?: string;
+    department?: string;
+    phone?: string;
+    active: boolean;
+  }) => void;
   onBack?: () => void;
 }
 
@@ -13,24 +23,35 @@ export default function Login({ onLogin, onBack }: LoginProps) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
-    setTimeout(() => {
-      const user = authenticate(username.trim(), password);
-      if (user) {
-        setCookie(
-          "hall_session",
-          JSON.stringify({ id: user.id, role: user.role }),
-          1,
-        );
-        onLogin(user);
-      } else {
-        setError("Invalid credentials or account inactive. Please try again.");
-      }
+
+    try {
+      const response = await authService.login({ username: username.trim(), password });
+
+      // Save token and user
+      authService.saveToken(response.token);
+      authService.saveUser(response);
+
+      onLogin({
+        userId: response.userId,
+        username: response.username,
+        role: response.role as Role,
+        name: response.name,
+        email: response.email,
+        room: response.room,
+        department: response.department,
+        phone: response.phone,
+        active: response.active,
+      });
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Login failed";
+      setError(errorMessage || "Invalid credentials or account inactive. Please try again.");
+    } finally {
       setLoading(false);
-    }, 400);
+    }
   };
 
   return (

@@ -1,44 +1,59 @@
 import { useState, useEffect } from "react";
-import type { User } from "./dummy";
-import { USERS, getCookie, deleteCookie } from "./dummy";
 import LandingPage from "./views/LandingPage";
 import Login from "./views/Login";
 import StudentDashboard from "./views/StudentDashboard";
 import StaffDashboard from "./views/StaffDashboard";
 import AdminConsole from "./views/AdminConsole";
+import { authService } from "./services/api";
+import type { Role } from "./types";
 
 type Screen = "landing" | "login" | "app";
 
 export default function App() {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<{
+    userId: string;
+    username: string;
+    role: Role;
+    name: string;
+    email: string;
+    room?: string;
+    department?: string;
+    phone?: string;
+    active: boolean;
+  } | null>(null);
   const [screen, setScreen] = useState<Screen>("landing");
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    const session = getCookie("hall_session");
-    if (session) {
-      try {
-        const { id } = JSON.parse(session);
-        const found = USERS.find((u) => u.id === id && u.active);
-        if (found) {
-          setUser(found);
-          setScreen("app");
-        }
-      } catch {
-        deleteCookie("hall_session");
-      }
+    const storedUser = authService.getStoredUser();
+    const token = authService.getToken();
+
+    if (storedUser && token) {
+      setUser(storedUser);
+      setScreen("app");
     }
     setChecking(false);
   }, []);
 
-  const handleLogout = () => {
-    deleteCookie("hall_session");
+  const handleLogout = async () => {
+    await authService.logout();
+    authService.clearAuth();
     setUser(null);
     setScreen("landing");
   };
 
-  const handleLogin = (u: User) => {
-    setUser(u);
+  const handleLogin = (userData: {
+    userId: string;
+    username: string;
+    role: Role;
+    name: string;
+    email: string;
+    room?: string;
+    department?: string;
+    phone?: string;
+    active: boolean;
+  }) => {
+    setUser(userData);
     setScreen("app");
   };
 
